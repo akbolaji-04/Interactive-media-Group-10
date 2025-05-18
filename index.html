@@ -302,6 +302,20 @@
       </div>
     </footer>
   </div>
+  <div id="instructionModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(44,62,80,0.32); justify-content:center; align-items:center;">
+    <div style="background:#fff; border-radius:18px; box-shadow:0 8px 32px rgba(66,133,244,0.18); max-width:95vw; width:370px; padding:2.2rem 1.5rem 1.5rem 1.5rem; text-align:center; position:relative;">
+      <button id="closeInstructionModal" aria-label="Close instructions" style="position:absolute; top:18px; right:18px; background:none; border:none; font-size:1.5rem; color:#4285f4; cursor:pointer;">&times;</button>
+      <h2 style="color:#4285f4; font-size:1.3rem; margin-bottom:0.7rem; font-weight:700; letter-spacing:0.5px;">Welcome to the Virtual Try-On App</h2>
+      <p style="color:#444; font-size:1rem; margin-bottom:1.1rem;">Follow these steps to get started:</p>
+      <ol style="text-align:left; color:#2D2D3B; font-size:0.98rem; margin:0 0 1.2rem 1.2rem; padding:0;">
+        <li>Upload a clear, front-facing photo of yourself.</li>
+        <li>Select a shirt or garment from the options below.</li>
+        <li>Click <b>Try On Shirt</b> to see the virtual result.</li>
+        <li>Download your try-on image if you like the result.</li>
+      </ol>
+      <div style="color:#7b8794; font-size:0.95rem;">For best results, use a well-lit photo and try different outfits!</div>
+    </div>
+  </div>
   <script>
   (function(){
     const API_KEY = 'fa-P6CHIRRwllKr-vxrnZlwkXBxx5ibCo81xMRBp';
@@ -356,6 +370,20 @@
       const a=document.createElement('a'); a.href=resultImg.src; a.download='try-on-result.png'; a.click();
     });
   })();
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('instructionModal');
+    const closeBtn = document.getElementById('closeInstructionModal');
+    // Show modal on first load
+    setTimeout(() => { modal.style.display = 'flex'; }, 400);
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+    // Optional: close on outside click
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+  });
   </script>
 </body>
 </html>
