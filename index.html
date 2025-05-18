@@ -333,7 +333,25 @@
 
     let userFile = null, selectedShirt = null;
 
-    imageUpload.addEventListener('change', e => { userFile = e.target.files[0] || null; updateState(); });
+    imageUpload.addEventListener('change', e => {
+      const file = e.target.files[0] || null;
+      if (file && file.size > 2 * 1024 * 1024) { // 2MB limit
+        alert('Image is too large! Please select an image under 2MB.');
+        imageUpload.value = '';
+        userFile = null;
+        updateState();
+        return;
+      }
+      if (file && !file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        imageUpload.value = '';
+        userFile = null;
+        updateState();
+        return;
+      }
+      userFile = file;
+      updateState();
+    });
     shirtOptions.forEach(opt => opt.addEventListener('click', () => {
       shirtOptions.forEach(o => o.classList.remove('selected'));
       opt.classList.add('selected'); selectedShirt = opt.dataset.src; updateState();
@@ -350,11 +368,29 @@
     function imgURLtoDataURL(url){ return fetch(url).then(r=>r.blob()).then(blob=>toDataURL(blob)); }
 
     tryBtn.addEventListener('click', async ()=>{
+      if (!userFile) {
+        alert('Please select an image under 2MB.');
+        return;
+      }
       updateState(); spinner.style.display='block'; resultImg.style.display='none'; canvas.style.display='none';
       try {
         const [model_b64, garment_b64] = await Promise.all([toDataURL(userFile), imgURLtoDataURL(selectedShirt)]);
+        // Double-check base64 size (API may have stricter limits)
+        if (model_b64.length > 3.5 * 1024 * 1024) { // ~2.6MB base64
+          spinner.style.display='none';
+          alert('Image is too large after encoding. Please use a smaller image.');
+          return;
+        }
         const runRes=await fetch(RUN_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+API_KEY},body:JSON.stringify({model_image:model_b64,garment_image:garment_b64,category:'tops'})});
-        if(!runRes.ok) throw new Error('Run error '+runRes.status);
+        if(!runRes.ok) {
+          spinner.style.display='none';
+          if(runRes.status === 413) {
+            alert('Image is too large for the server. Please use a smaller image (under 2MB).');
+          } else {
+            alert('Run error '+runRes.status);
+          }
+          return;
+        }
         const {id}=await runRes.json(); let status,output;
         do{await new Promise(r=>setTimeout(r,2000));const stat=await fetch(STATUS_URL+id,{headers:{Authorization:'Bearer '+API_KEY}});const js=await stat.json();status=js.status;output=js.output;}while(status!=='completed'&&status!=='failed');
         spinner.style.display='none';
