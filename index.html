@@ -1,473 +1,57 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Interactive Media Group 10 Virtual Try‑On</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* Reset & Variables */
-    :root {
-      --primary: #4285f4;
-      --secondary: #34a853;
-      --accent: #ff6584;
-      --bg: #f7f9fa;
-      --light: #fff;
-      --dark: #2D2D3B;
-      --shadow: rgba(0,0,0,0.1);
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #e0e7ff 0%, #f7f9fa 100%);
-      color: var(--dark);
-      display:flex;
-      justify-content:center;
-      padding:20px;
-    }
-    .container {
-      max-width:900px;
-      width:100%;
-      background: var(--light);
-      border-radius:16px;
-      box-shadow:0 8px 32px rgba(66,133,244,0.10), 0 1.5px 6px rgba(52,168,83,0.08);
-      overflow:hidden;
-      animation:fadeIn .5s ease;
-      border: 1.5px solid #e0e7ff;
-    }
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    header {
-      background: linear-gradient(90deg, #4285f4 0%, #34a853 100%);
-      color: var(--light);
-      text-align:center;
-      padding:2rem 1rem;
-      position: relative;
-      overflow: hidden;
-    }
-    header::after {
-      content: '';
-      position: absolute;
-      top: 0; right: 0; bottom: 0; left: 0;
-      background: url('https://www.transparenttextures.com/patterns/diamond-upholstery.png');
-      opacity: 0.08;
-      pointer-events: none;
-    }
-    header h1 {
-      font-size: 2.2rem;
-      letter-spacing: 1px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    header p {
-      font-size: 1.1rem;
-      color: #e0e7ff;
-      margin-bottom: 0;
-    }
-    main { padding:2rem; }
-    /* Upload Section */
-    .upload-section { text-align:center; margin-bottom:2rem; }
-    .upload-section p { margin-bottom:1rem; color:#555; }
-    .upload-section input[type=file] {
-      width: 100%;
-      max-width: 320px;
-      margin: 0 auto;
-      padding:1rem;
-      border:2px dashed #b6c2e1;
-      border-radius:8px;
-      cursor:pointer;
-      background: #f1f5f9;
-      color: #2D2D3B;
-      transition:border .3s;
-    }
-    .upload-section input[type=file]:hover { border-color: var(--primary); }
-    /* Shirt Selection */
-    .shirt-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-      gap:16px;
-      margin-bottom:2rem;
-    }
-    .shirt-option {
-      transition: border-color .3s, box-shadow .3s, transform .2s;
-      background: linear-gradient(135deg, #f7f9fa 60%, #e0e7ff 100%);
-      border: 2px solid #e0e7ff;
-      box-shadow: 0 2px 8px rgba(66,133,244,0.04);
-      border-radius:8px;
-      padding:8px;
-      text-align:center;
-      cursor:pointer;
-      overflow: hidden;
-    }
-    .shirt-option.selected {
-      border-color: #ff6584;
-      box-shadow: 0 6px 18px rgba(255,101,132,0.13);
-      transform: scale(1.04);
-    }
-    .shirt-option:hover {
-      border-color: #34a853;
-      box-shadow: 0 4px 16px rgba(52,168,83,0.10);
-      transform: scale(1.03);
-    }
-    .shirt-option img {
-      width:100%; height:100px; object-fit:contain;
-      margin-bottom:8px;
-      filter: drop-shadow(0 2px 6px rgba(66,133,244,0.07));
-      background: #fff;
-      border-radius: 6px;
-      padding: 2px;
-    }
-    .shirt-name {
-      font-size: 1rem;
-      color: #2D2D3B;
-      margin-top: 2px;
-    }
-    /* Buttons */
-    .btn-group-extra {
-      display:flex;
-      justify-content:flex-end;
-      gap:10px;
-      margin-top: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .tryon-btn, .download-btn {
-      width:auto; padding:0.75rem 1.5rem;
-      background: linear-gradient(90deg, #ff6584 0%, #4285f4 100%);
-      color: var(--light);
-      border:none;
-      border-radius:8px;
-      font-size:1.05rem;
-      letter-spacing: 0.5px;
-      font-weight:600;
-      cursor:pointer;
-      transition: background .3s, box-shadow .2s, transform .2s;
-      box-shadow: 0 2px 8px rgba(255,101,132,0.08);
-    }
-    .tryon-btn:disabled, .download-btn:disabled {
-      background: #e0e7ff;
-      color: #b6c2e1;
-      box-shadow: none;
-    }
-    .tryon-btn:not(:disabled):hover, .download-btn:not(:disabled):hover {
-      background: linear-gradient(90deg, #34a853 0%, #ff6584 100%);
-      box-shadow: 0 4px 16px rgba(52,168,83,0.13);
-      transform: translateY(-2px) scale(1.03);
-    }
-    /* Canvas & Result */
-    .canvas-container {
-      position:relative;
-      background: linear-gradient(135deg, #e0e7ff 0%, #f7f9fa 100%);
-      border: 1.5px solid #b6c2e1;
-      box-shadow: 0 2px 8px rgba(66,133,244,0.06);
-      height:400px;
-      margin-bottom:2rem;
-      overflow:hidden;
-    }
-    #canvas, #result-img {
-      position:absolute;
-      top:50%; left:50%; transform:translate(-50%,-50%);
-      max-width:100%; max-height:100%;
-      border: 2px solid #e0e7ff;
-      box-shadow: 0 2px 8px rgba(66,133,244,0.04);
-      border-radius:8px;
-    }
-    .spinner {
-      position:absolute; top:50%; left:50%;
-      width:48px;height:48px;
-      border:6px solid #ddd;
-      border-top:6px solid #ff6584;
-      border-right:6px solid #34a853;
-      border-bottom:6px solid #4285f4;
-      border-left:6px solid #e0e7ff;
-      border-radius:50%;
-      animation:spin 1s linear infinite;
-      transform:translate(-50%,-50%);
-    }
-    @keyframes spin{0%{transform:translate(-50%,-50%) rotate(0deg)}100%{transform:translate(-50%,-50%) rotate(360deg)}}
-    /* Footer */
-    footer {
-      background: #f1f5f9;
-      border-top: 1px solid #e0e7ff;
-      color: #7b8794;
-      font-size: 1rem;
-      letter-spacing: 0.5px;
-      padding: 1.2rem 0 0.7rem 0;
-      margin-top: 0;
-      text-align:center;
-    }
-    footer div {
-      font-size: 1rem;
-      color: #4285f4;
-      font-weight: 600;
-      letter-spacing: 1px;
-    }
-    /* Responsive Design */
-    @media (max-width: 700px) {
-      .container {
-        max-width: 100vw;
-        border-radius: 0;
-        box-shadow: none;
-        margin: 0;
-      }
-      main {
-        padding: 1rem 0.5rem;
-      }
-      .upload-section h2 {
-        font-size: 1.2rem;
-      }
-      .shirt-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-      .btn-group-extra {
-        flex-direction: column;
-        gap: 8px;
-        align-items: stretch;
-      }
-      .canvas-container {
-        height: 250px;
-      }
-      .shirt-option img {
-        height: 70px;
-      }
-    }
-    @media (max-width: 400px) {
-      .shirt-grid {
-        grid-template-columns: 1fr;
-      }
-      .canvas-container {
-        height: 180px;
-      }
-    }
-    /* Subtle Animations */
-    .shirt-option, .tryon-btn, .download-btn {
-      transition: all 0.2s cubic-bezier(.4,0,.2,1);
-    }
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      background: #e0e7ff;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #b6c2e1;
-      border-radius: 8px;
-    }
-    /* Accessibility */
-    .shirt-option:focus {
-      outline: 2px solid #4285f4;
-      outline-offset: 2px;
-    }
-    .tryon-btn:focus, .download-btn:focus {
-      outline: 2px solid #ff6584;
-      outline-offset: 2px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Media Group 10 Virtual Try-On</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Interactive Media Group 10</h1>
-      <p>Virtual Try‑On App</p>
+<body class="bg-gray-100 text-gray-800">
+  <div class="container mx-auto px-4 py-8">
+    <header class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-blue-600">Interactive Media Group 10</h1>
+      <p class="text-lg text-green-600">Virtual Try-On App</p>
     </header>
-    <main>
-      <!-- Upload -->
-      <section class="upload-section">
-        <h2>Upload Your Photo</h2>
-        <p>For best results, use a front-facing photo with good lighting</p>
-        <input type="file" id="imageUpload" accept="image/*">
-      </section>
-      <!-- Shirt/Garment Selection -->
-      <div class="shirt-grid" id="shirtGrid">
-        <div class="shirt-option" data-src="images/white-shirt.png"><img src="images/white-shirt.png" alt><div class="shirt-name">White Tee</div></div>
-        <div class="shirt-option" data-src="images/denim-shirt.png"><img src="images/denim-shirt.png" alt><div class="shirt-name">Denim Shirt</div></div>
-        <div class="shirt-option" data-src="images/striped-shirt.png"><img src="images/striped-shirt.png" alt><div class="shirt-name">Striped Polo</div></div>
-        <div class="shirt-option" data-src="images/black-shirt.png"><img src="images/black-shirt.png" alt><div class="shirt-name">Black V-Neck</div></div>
-        <div class="shirt-option" data-src="images/hoodie.png"><img src="images/hoodie.png" alt><div class="shirt-name">Cozy Hoodie</div></div>
-        <div class="shirt-option" data-src="images/gown.png"><img src="images/gown.png" alt><div class="shirt-name">Elegant Gown</div></div>
-        <div class="shirt-option" data-src="images/cap.png"><img src="images/cap.png" alt><div class="shirt-name">Baseball Cap</div></div>
+
+    <section id="authSection" class="text-center">
+      <button id="googleSignInBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded shadow">
+        Sign in with Google
+      </button>
+    </section>
+
+    <section id="tryonSection" class="hidden">
+      <div class="mb-6 text-center">
+        <h2 class="text-xl font-semibold mb-2">Upload Your Photo</h2>
+        <p class="text-sm text-gray-600 mb-4">Use a clear, front-facing photo with good lighting</p>
+        <input type="file" id="imageUpload" accept="image/*" class="border-2 border-dashed border-blue-300 w-full max-w-md p-4 rounded mx-auto" />
       </div>
-      <!-- Actions -->
-      <div class="btn-group-extra">
-        <button id="downloadBtn" class="download-btn" disabled>Download Result</button>
-        <button id="tryOnBtn" class="tryon-btn" disabled>Try On Shirt</button>
+    </section>
+
+    <div id="shirtGrid" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+      <div class="shirt-option" data-src="images/white-shirt.png">
+        <img src="images/white-shirt.png" alt="White Tee" class="w-full h-32 object-contain mb-2">
+        <p class="text-center text-sm font-medium">White Tee</p>
       </div>
-      <!-- Canvas -->
-      <div class="canvas-container" id="canvasContainer">
-        <div class="spinner" id="spinner" style="display:none;"></div>
-        <canvas id="canvas"></canvas>
-        <img id="result-img" style="display:none;" alt="Result">
-      </div>
-    </main>
-    <footer>
-      <div style="font-size:1rem; color:#4285f4; font-weight:600; letter-spacing:1px;">
-        © 2025 Abolaji Akorede. All Rights Reserved.
-      </div>
+      <!-- Repeat for other shirts -->
+    </div>
+
+    <div id="actionButtons" class="hidden flex flex-col sm:flex-row gap-4 justify-center mb-6">
+      <button id="downloadBtn" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded shadow" disabled>Download Result</button>
+      <button id="tryOnBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded shadow" disabled>Try On Shirt</button>
+    </div>
+
+    <div id="canvasContainer" class="relative bg-white border rounded shadow-lg mx-auto max-w-xl h-96 flex items-center justify-center">
+      <div id="spinner" class="hidden w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin absolute"></div>
+      <canvas id="canvas" class="absolute top-0 left-0 w-full h-full"></canvas>
+      <img id="result-img" class="hidden max-w-full max-h-full rounded border" alt="Try-on Result" />
+    </div>
+
+    <footer class="mt-10 text-center text-sm text-gray-600">
+      <div>&copy; 2025 Abolaji Akorede. All Rights Reserved.</div>
     </footer>
   </div>
-  <div id="instructionModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(44,62,80,0.32); justify-content:center; align-items:center;">
-    <div style="background:#fff; border-radius:18px; box-shadow:0 8px 32px rgba(66,133,244,0.18); max-width:95vw; width:370px; padding:2.2rem 1.5rem 1.5rem 1.5rem; text-align:center; position:relative;">
-      <button id="closeInstructionModal" aria-label="Close instructions" style="position:absolute; top:18px; right:18px; background:none; border:none; font-size:1.5rem; color:#4285f4; cursor:pointer;">&times;</button>
-      <h2 style="color:#4285f4; font-size:1.3rem; margin-bottom:0.7rem; font-weight:700; letter-spacing:0.5px;">Welcome to the Virtual Try-On App</h2>
-      <p style="color:#444; font-size:1rem; margin-bottom:1.1rem;">Follow these steps to get started:</p>
-      <ol style="text-align:left; color:#2D2D3B; font-size:0.98rem; margin:0 0 1.2rem 1.2rem; padding:0;">
-        <li>Upload a clear, front-facing photo of yourself.</li>
-        <li>Select a shirt or garment from the options below.</li>
-        <li>Click <b>Try On Shirt</b> to see the virtual result.</li>
-        <li>Download your try-on image if you like the result.</li>
-      </ol>
-      <div style="color:#7b8794; font-size:0.95rem;">For best results, use a well-lit photo and try different outfits!</div>
-    </div>
-  </div>
-  <script>
-  (function(){
-    const API_KEY = 'fa-P6CHIRRwllKr-vxrnZlwkXBxx5ibCo81xMRBp';
-    const RUN_URL = 'https://api.fashn.ai/v1/run';
-    const STATUS_URL = 'https://api.fashn.ai/v1/status/';
-
-    const imageUpload = document.getElementById('imageUpload');
-    const shirtOptions = document.querySelectorAll('.shirt-option');
-    const tryBtn = document.getElementById('tryOnBtn');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const spinner = document.getElementById('spinner');
-    const canvas = document.getElementById('canvas');
-    const resultImg = document.getElementById('result-img');
-    const ctx = canvas.getContext('2d');
-
-    let userFile = null, selectedShirt = null;
-
-    // Helper: Compress image to max 2MB (JPEG, quality reduction)
-    async function compressImage(file, maxSizeMB = 2, maxWidth = 800) {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.onload = function() {
-          let width = img.width;
-          let height = img.height;
-          if (width > maxWidth) {
-            height = Math.round(height * (maxWidth / width));
-            width = maxWidth;
-          }
-          const canvas = document.createElement('canvas');
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, width, height);
-          let quality = 0.92;
-          let dataUrl = canvas.toDataURL('image/jpeg', quality);
-          // Reduce quality until under maxSizeMB or min quality
-          while (dataUrl.length > maxSizeMB * 1024 * 1024 && quality > 0.5) {
-            quality -= 0.07;
-            dataUrl = canvas.toDataURL('image/jpeg', quality);
-          }
-          // Convert dataURL back to File
-          fetch(dataUrl)
-            .then(res => res.blob())
-            .then(blob => {
-              resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), {type: 'image/jpeg'}));
-            });
-        };
-        img.onerror = reject;
-        img.src = url;
-      });
-    }
-
-    imageUpload.addEventListener('change', async e => {
-      let file = e.target.files[0] || null;
-      if (file && !file.type.startsWith('image/')) {
-        alert('Please select a valid image file.');
-        imageUpload.value = '';
-        userFile = null;
-        updateState();
-        return;
-      }
-      if (file && file.size > 2 * 1024 * 1024) {
-        // Try to compress
-        try {
-          file = await compressImage(file, 2, 800);
-          if (file.size > 2 * 1024 * 1024) {
-            alert('Image is too large even after compression. Please select a smaller image.');
-            imageUpload.value = '';
-            userFile = null;
-            updateState();
-            return;
-          }
-        } catch {
-          alert('Could not process image.');
-          imageUpload.value = '';
-          userFile = null;
-          updateState();
-          return;
-        }
-      }
-      userFile = file;
-      updateState();
-    });
-    shirtOptions.forEach(opt => opt.addEventListener('click', () => {
-      shirtOptions.forEach(o => o.classList.remove('selected'));
-      opt.classList.add('selected'); selectedShirt = opt.dataset.src; updateState();
-    }));
-
-    function updateState(){
-      const ready = userFile && selectedShirt;
-      tryBtn.disabled = !ready; downloadBtn.disabled = !resultImg.src;
-    }
-
-    function toDataURL(file){ return new Promise((res,rej)=>{
-      const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=e=>rej(e); r.readAsDataURL(file);
-    }); }
-    function imgURLtoDataURL(url){ return fetch(url).then(r=>r.blob()).then(blob=>toDataURL(blob)); }
-
-    tryBtn.addEventListener('click', async ()=>{
-      if (!userFile) {
-        alert('Please select an image under 2MB.');
-        return;
-      }
-      updateState(); spinner.style.display='block'; resultImg.style.display='none'; canvas.style.display='none';
-      try {
-        const [model_b64, garment_b64] = await Promise.all([toDataURL(userFile), imgURLtoDataURL(selectedShirt)]);
-        // Double-check base64 size (API may have stricter limits)
-        if (model_b64.length > 3.5 * 1024 * 1024) { // ~2.6MB base64
-          spinner.style.display='none';
-          alert('Image is too large after encoding. Please use a smaller image.');
-          return;
-        }
-        const runRes=await fetch(RUN_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+API_KEY},body:JSON.stringify({model_image:model_b64,garment_image:garment_b64,category:'tops'})});
-        if(!runRes.ok) {
-          spinner.style.display='none';
-          if(runRes.status === 413) {
-            alert('Image is too large for the server. Please use a smaller image (under 2MB).');
-          } else {
-            alert('Run error '+runRes.status);
-          }
-          return;
-        }
-        const {id}=await runRes.json(); let status,output;
-        do{await new Promise(r=>setTimeout(r,2000));const stat=await fetch(STATUS_URL+id,{headers:{Authorization:'Bearer '+API_KEY}});const js=await stat.json();status=js.status;output=js.output;}while(status!=='completed'&&status!=='failed');
-        spinner.style.display='none';
-        if(status==='completed'&&output?.length){
-          resultImg.src=output[0]; resultImg.style.display='block';
-          downloadBtn.disabled=false;
-        } else throw new Error('Prediction failed');
-      } catch(err){ spinner.style.display='none'; alert('Error: '+err.message); }
-    });
-
-    downloadBtn.addEventListener('click', ()=>{
-      if(!resultImg.src) return;
-      const a=document.createElement('a'); a.href=resultImg.src; a.download='try-on-result.png'; a.click();
-    });
-  })();
-
-  document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('instructionModal');
-    const closeBtn = document.getElementById('closeInstructionModal');
-    // Show modal on first load
-    setTimeout(() => { modal.style.display = 'flex'; }, 400);
-    closeBtn.addEventListener('click', function() {
-      modal.style.display = 'none';
-    });
-    // Optional: close on outside click
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) modal.style.display = 'none';
-    });
-  });
-  </script>
+  <script src="app.js" type="module"></script>
 </body>
 </html>
