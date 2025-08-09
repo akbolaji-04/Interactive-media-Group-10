@@ -1,5 +1,7 @@
 // ...existing code (one set only, no duplicates)...
 
+// (All import statements removed. Only use global firebase object.)
+
 const firebaseConfig = {
   apiKey: "AIzaSyAlDqliy8paoUMvQzYZmM2YZ-qeUBXhbqk",
   authDomain: "clovr-e1fec.firebaseapp.com",
