@@ -172,6 +172,5 @@ document.addEventListener('DOMContentLoaded', function() {
       a.click();
     });
   }
-    });
-  });
 
+})
