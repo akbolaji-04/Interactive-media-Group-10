@@ -23,6 +23,90 @@ const PAYSTACK_KEY = 'sk_test_27830de011b1b57cf83a852f2eb2e2b93a451fd1';
 // DOM refs
 // Profile button logic
 document.addEventListener('DOMContentLoaded', function() {
+  // Profile menu logic
+  // Use the already declared profileBtn if present, else get it
+  var profileBtn = document.getElementById('open-auth-modal');
+  const profileMenu = document.getElementById('profile-menu');
+  let menuOpen = false;
+  if (profileBtn && profileMenu) {
+    profileBtn.addEventListener('click', function(e) {
+      // Only show menu if user is logged in
+      if (firebase.auth().currentUser) {
+        menuOpen = !menuOpen;
+        profileMenu.style.display = menuOpen ? 'block' : 'none';
+        e.stopPropagation();
+      } else {
+        // If not logged in, open auth modal
+        const authModal = document.getElementById('auth-modal');
+        if (authModal) authModal.style.display = 'flex';
+      }
+    });
+    // Hide menu on outside click
+    document.addEventListener('click', function(e) {
+      if (menuOpen && !profileBtn.contains(e.target)) {
+        profileMenu.style.display = 'none';
+        menuOpen = false;
+      }
+    });
+    // Logout
+    document.getElementById('profile-menu-logout').onclick = function() {
+      firebase.auth().signOut();
+      profileMenu.style.display = 'none';
+      menuOpen = false;
+    };
+    // Account handler
+    document.getElementById('profile-menu-account').onclick = function() {
+      const user = firebase.auth().currentUser;
+      let modal = document.getElementById('accountInfoModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'accountInfoModal';
+        modal.style = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(44,62,80,0.18);z-index:20000;display:flex;align-items:center;justify-content:center;';
+        modal.innerHTML = `<div style="background:#fff;padding:2.2rem 2rem 1.5rem 2rem;border-radius:14px;box-shadow:0 8px 32px #2563eb22;min-width:320px;max-width:90vw;position:relative;">
+          <button id='closeAccountInfoModal' style='position:absolute;top:12px;right:12px;background:none;border:none;font-size:1.5rem;color:#888;cursor:pointer;'>&times;</button>
+          <h2 style='margin-bottom:1.1rem;font-size:1.3rem;color:#2563eb;'>Account Info</h2>
+          <div style='margin-bottom:0.7rem;'><b>Email:</b> ${user?.email || 'Unknown'}</div>
+          <div style='margin-bottom:0.7rem;'><b>UID:</b> ${user?.uid || 'Unknown'}</div>
+        </div>`;
+        document.body.appendChild(modal);
+        document.getElementById('closeAccountInfoModal').onclick = function() {
+          modal.remove();
+        };
+      }
+      profileMenu.style.display = 'none';
+      menuOpen = false;
+    };
+    // Subscription handler
+    document.getElementById('profile-menu-subscription').onclick = function() {
+      let modal = document.getElementById('subscriptionModal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'subscriptionModal';
+        modal.style = 'position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(44,62,80,0.18);z-index:20000;display:flex;align-items:center;justify-content:center;';
+        modal.innerHTML = `<div style="background:#fff;padding:2.2rem 2rem 1.5rem 2rem;border-radius:14px;box-shadow:0 8px 32px #2563eb22;min-width:320px;max-width:90vw;position:relative;">
+          <button id='closeSubscriptionModal' style='position:absolute;top:12px;right:12px;background:none;border:none;font-size:1.5rem;color:#888;cursor:pointer;'>&times;</button>
+          <h2 style='margin-bottom:1.1rem;font-size:1.3rem;color:#2563eb;'>Subscription & Payment</h2>
+          <div style='margin-bottom:0.7rem;'>Manage your subscription and payment here. (Coming soon!)</div>
+        </div>`;
+        document.body.appendChild(modal);
+        document.getElementById('closeSubscriptionModal').onclick = function() {
+          modal.remove();
+        };
+      }
+      profileMenu.style.display = 'none';
+      menuOpen = false;
+    };
+    // Moodboard handler
+    document.getElementById('profile-menu-moodboard').onclick = function() {
+      var mbModal = document.getElementById('moodboardModal');
+      if (mbModal) {
+        mbModal.style.display = 'flex';
+        mbModal.focus && mbModal.focus();
+      }
+      profileMenu.style.display = 'none';
+      menuOpen = false;
+    };
+  }
   const profileBtn = document.getElementById('open-auth-modal');
   const authModal = document.getElementById('auth-modal');
   if (profileBtn && authModal) {
@@ -69,7 +153,12 @@ document.addEventListener('DOMContentLoaded', function() {
           const authModal = document.getElementById('auth-modal');
           if (authModal) authModal.style.display = 'none';
         })
-        .catch(e => alert('Google sign-in failed: ' + (e.message || e)));
+        .catch(e => {
+          // Only alert if not popup closed by user
+          if (!e.code || e.code !== 'auth/popup-closed-by-user') {
+            alert('Google sign-in failed: ' + (e.message || e));
+          }
+        });
     });
   }
 

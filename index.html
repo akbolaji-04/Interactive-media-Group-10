@@ -480,10 +480,24 @@
           <img src="CloVR logo.png" alt="CloVR Logo" style="height:54px;width:54px;object-fit:contain;border-radius:12px;box-shadow:0 2px 12px #2563eb22;background:#fff;">
           <h1 style="font-family:'Poppins',sans-serif;font-size:2.3rem;letter-spacing:1px;color:#000;text-shadow:0 2px 8px #2563eb33;margin:0;">CLOVR</h1>
           <div id="profile-btn-container" style="position:absolute;right:0;top:0;display:flex;align-items:center;">
-            <button id="open-auth-modal" style="background:none;border:none;outline:none;cursor:pointer;padding:0;margin:0;">
+            <button id="open-auth-modal" style="background:none;border:none;outline:none;cursor:pointer;padding:0;margin:0;position:relative;">
               <span id="profile-placeholder" style="display:inline-block;width:44px;height:44px;border-radius:50%;background:#e0e7ff;box-shadow:0 1.5px 6px #2563eb22;display:flex;align-items:center;justify-content:center;font-size:1.7rem;color:#b6c2e1;overflow:hidden;">
                 <svg id="profile-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8.5" r="4.5" fill="#b6c2e1"/><ellipse cx="12" cy="17" rx="7" ry="4" fill="#b6c2e1"/></svg>
               </span>
+              <div id="profile-menu" style="display:none;position:absolute;top:54px;right:0;min-width:180px;background:#fff;border-radius:10px;box-shadow:0 4px 24px #22223b22;padding:0.7rem 0;z-index:1003;text-align:left;">
+                <style>
+                  .profile-menu-item { padding:0.7rem 1.2rem; cursor:pointer; transition:background 0.18s, color 0.18s; }
+                  .profile-menu-item:hover { background:#f7f9fa; color:#2563eb; }
+                  .profile-menu-divider { border-top:1px solid #ececec; margin:0.3rem 0 0 0; }
+                  .profile-menu-logout { color:#ff6584; font-weight:600; }
+                  .profile-menu-account { font-weight:600; color:#2563eb; }
+                </style>
+                <div id="profile-menu-account" class="profile-menu-item profile-menu-account">Account</div>
+                <div id="profile-menu-subscription" class="profile-menu-item">Subscription & Payment</div>
+                <div id="profile-menu-moodboard" class="profile-menu-item">Moodboard</div>
+                <div class="profile-menu-divider"></div>
+                <div id="profile-menu-logout" class="profile-menu-item profile-menu-logout">Logout</div>
+              </div>
             </button>
           </div>
         </div>
