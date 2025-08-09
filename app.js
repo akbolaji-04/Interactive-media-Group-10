@@ -26,7 +26,8 @@ async function ensureUserRecord(uid) {
 async function checkSubscription(uid) {
   // Call Netlify Function
   const res = await fetch('/.netlify/functions/checkSubscription', {
-    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ uid })
   });
   if (!res.ok) return false;
@@ -83,7 +84,7 @@ async function removeBackground(file) {
   return new File([blob], 'no-bg.png', { type: blob.type });
 }
 
-downloadBtn.addEventListener('click', () => {
+
 
 // Try-on workflow and all DOM-dependent logic
 document.addEventListener('DOMContentLoaded', function() {
@@ -110,8 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
       opt.classList.add('selected');
       selectedShirt = opt.dataset.src;
       if (tryBtn) tryBtn.disabled = !userFile || !selectedShirt;
-    });
   });
+});
 
   if (tryBtn) {
     tryBtn.addEventListener('click', async () => {
