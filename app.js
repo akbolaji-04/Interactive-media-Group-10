@@ -1,21 +1,18 @@
 // ...existing code (one set only, no duplicates)...
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB8zKTVZpoPmtxX9PS_et_JWVrbUpste9k",
-  authDomain: "bytebites-8e4d6.firebaseapp.com",
-  projectId: "bytebites-8e4d6",
-  storageBucket: "bytebites-8e4d6.firebasestorage.app",
-  messagingSenderId: "1027669607395",
-  appId: "1:1027669607395:web:39bb370d43035fa05016d6",
-  measurementId: "G-3DTVS8EL4T"
+  apiKey: "AIzaSyAlDqliy8paoUMvQzYZmM2YZ-qeUBXhbqk",
+  authDomain: "clovr-e1fec.firebaseapp.com",
+  projectId: "clovr-e1fec",
+  storageBucket: "clovr-e1fec.firebasestorage.app",
+  messagingSenderId: "138358764083",
+  appId: "1:138358764083:web:e49f93ca77cfe4fc7ce946",
+  measurementId: "G-YL6MX607V2"
 };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const provider = new firebase.auth.GoogleAuthProvider();
 
 const REMOVE_BG_KEY = 'NmeuhmwYFeh48ySGMZehsrVo';
 const API_KEY = 'fa-P6CHIRRwllKr-vxrnZlwkXBxx5ibCo81xMRBp';
@@ -24,21 +21,79 @@ const STATUS_URL = 'https://api.fashn.ai/v1/status/';
 const PAYSTACK_KEY = 'sk_test_27830de011b1b57cf83a852f2eb2e2b93a451fd1';
 
 // DOM refs
-const googleBtn = document.getElementById('googleSignInBtn');
-const tryonSection = document.getElementById('tryonSection');
-const shirtGrid = document.getElementById('shirtGrid');
-const actionButtons = document.getElementById('actionButtons');
-const tryBtn = document.getElementById('tryOnBtn');
-const downloadBtn = document.getElementById('downloadBtn');
-const imageUpload = document.getElementById('imageUpload');
-const spinner = document.getElementById('spinner');
-const canvas = document.getElementById('canvas');
-const resultImg = document.getElementById('result-img');
-const ctx = canvas.getContext('2d');
+// Profile button logic
+document.addEventListener('DOMContentLoaded', function() {
+  const profileBtn = document.getElementById('open-auth-modal');
+  const authModal = document.getElementById('auth-modal');
+  if (profileBtn && authModal) {
+    profileBtn.addEventListener('click', () => {
+      authModal.style.display = 'flex';
+    });
+  }
+});
 
-// Auth
-googleBtn.addEventListener('click', () => signInWithPopup(auth, provider).catch(e => alert(e.message)));
-onAuthStateChanged(auth, async user => {
+// Update profile placeholder after login
+  auth.onAuthStateChanged(async function(user) {
+  const profilePlaceholder = document.getElementById('profile-placeholder');
+  if (user && profilePlaceholder) {
+    if (user.photoURL) {
+      profilePlaceholder.innerHTML = `<img src="${user.photoURL}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else if (user.email) {
+      // Show first letter of email as fallback
+      profilePlaceholder.innerHTML = `<span style='font-size:1.5rem;color:#fff;'>${user.email[0].toUpperCase()}</span>`;
+    }
+  } else if (profilePlaceholder) {
+    // Reset to default SVG
+    profilePlaceholder.innerHTML = `<svg id=\"profile-svg\" width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"8.5\" r=\"4.5\" fill=\"#b6c2e1\"/><ellipse cx=\"12\" cy=\"17\" rx=\"7\" ry=\"4\" fill=\"#b6c2e1\"/></svg>`;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const googleBtn = document.getElementById('googleSignInBtn');
+  const tryonSection = document.getElementById('tryonSection');
+  const shirtGrid = document.getElementById('shirtGrid');
+  const actionButtons = document.getElementById('actionButtons');
+  const tryBtn = document.getElementById('tryOnBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const imageUpload = document.getElementById('imageUpload');
+  const spinner = document.getElementById('spinner');
+  const canvas = document.getElementById('canvas');
+  const resultImg = document.getElementById('result-img');
+  const ctx = canvas ? canvas.getContext('2d') : null;
+
+  // Google Sign In
+  if (googleBtn) {
+    googleBtn.addEventListener('click', function() {
+      auth.signInWithPopup(provider)
+        .then(() => {
+          const authModal = document.getElementById('auth-modal');
+          if (authModal) authModal.style.display = 'none';
+        })
+        .catch(e => alert('Google sign-in failed: ' + (e.message || e)));
+    });
+  }
+
+  // Email/password sign up
+  window.signUpWithEmail = function(email, password) {
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        const authModal = document.getElementById('auth-modal');
+        if (authModal) authModal.style.display = 'none';
+      })
+      .catch(e => alert('Sign up failed: ' + (e.message || e)));
+  };
+
+  // Email/password login
+  window.loginWithEmail = function(email, password) {
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        const authModal = document.getElementById('auth-modal');
+        if (authModal) authModal.style.display = 'none';
+      })
+      .catch(e => alert('Login failed: ' + (e.message || e)));
+  };
+});
+auth.onAuthStateChanged(async function(user) {
   if (user) {
     document.getElementById('authSection').style.display = 'none';
     tryonSection.classList.remove('hidden');
@@ -52,10 +107,10 @@ onAuthStateChanged(auth, async user => {
 
 // Firestore helpers
 async function ensureUserRecord(uid) {
-  const ref = doc(db, 'users', uid);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) {
-    await setDoc(ref, { trialStart: serverTimestamp(), subscribed: false });
+  const ref = db.collection('users').doc(uid);
+  const snap = await ref.get();
+  if (!snap.exists) {
+    await ref.set({ trialStart: new Date(), subscribed: false });
   }
 }
 
@@ -86,7 +141,7 @@ function initiatePayment() {
     metadata: { custom_fields: [{ display_name: 'User ID', variable_name: 'uid', value: auth.currentUser.uid }] },
     callback: async (response) => {
       alert('Payment successful: ' + response.reference);
-      await setDoc(doc(db, 'users', auth.currentUser.uid), { subscribed: true }, { merge: true });
+  await db.collection('users').doc(auth.currentUser.uid).set({ subscribed: true }, { merge: true });
     },
     onClose: () => alert('Subscription payment was cancelled.')
   });
@@ -175,27 +230,25 @@ tryBtn.addEventListener('click', async () => {
   if (status === 'completed' && output?.length) {
     resultImg.src = output[0];
     resultImg.classList.remove('hidden');
-const openAuthModalBtn = document.getElementById('open-auth-modal');
-const closeAuthModalBtn = document.getElementById('close-auth-modal');
-const authModal = document.getElementById('auth-modal');
-const userSection = document.getElementById('user-section');
-const userEmailSpan = document.getElementById('user-email');
-const clothingUpload = document.getElementById('clothing-upload');
-const tryonCanvas = document.getElementById('tryon-canvas');
-    downloadBtn.disabled = false;
-// Modal logic
-if (openAuthModalBtn && authModal) {
-  openAuthModalBtn.addEventListener('click', () => {
-    authModal.style.display = 'flex';
-  });
-}
-if (closeAuthModalBtn && authModal) {
-  closeAuthModalBtn.addEventListener('click', () => {
-    authModal.style.display = 'none';
-  });
-}
-window.addEventListener('click', (e) => {
-  if (e.target === authModal) authModal.style.display = 'none';
+document.addEventListener('DOMContentLoaded', function() {
+  const openAuthModalBtn = document.getElementById('open-auth-modal');
+  const closeAuthModalBtn = document.getElementById('close-auth-modal');
+  const authModal = document.getElementById('auth-modal');
+  if (openAuthModalBtn && authModal) {
+    openAuthModalBtn.addEventListener('click', () => {
+      authModal.style.display = 'flex';
+    });
+  }
+  if (closeAuthModalBtn && authModal) {
+    closeAuthModalBtn.addEventListener('click', () => {
+      authModal.style.display = 'none';
+    });
+  }
+  if (authModal) {
+    window.addEventListener('click', (e) => {
+      if (e.target === authModal) authModal.style.display = 'none';
+    });
+  }
 });
   } else {
 // Improved Google sign-in logic

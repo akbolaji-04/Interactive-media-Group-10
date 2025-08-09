@@ -5,11 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>CLOVR – Virtual Try‑On</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <!-- Firebase App (the core Firebase SDK) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <!-- Firebase Auth -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
   <!-- Your custom auth logic -->
   <!-- <script defer src="auth.js"></script> -->
   <style>
@@ -469,12 +475,19 @@
 </head>
 <body>
     <div class="container">
-      <header style="background:linear-gradient(90deg,#2563eb 0%,#38bdf8 100%);color:#fff;text-align:center;padding:2.2rem 1.2rem 1.5rem 1.2rem;border-radius:0 0 22px 22px;box-shadow:0 4px 24px #2563eb22,0 1.5px 6px #38bdf822;display:flex;flex-direction:column;align-items:center;">
-        <div style="display:flex;align-items:center;gap:1.1rem;justify-content:center;margin-bottom:0.2rem;">
+      <header style="background:linear-gradient(90deg,#f5f5f5 0%,#eaeaea 100%);color:#22223b;text-align:center;padding:2.2rem 1.2rem 1.5rem 1.2rem;border-bottom:1.5px solid #e0e0e0;box-shadow:0 4px 24px 0 #b6b6b633,0 1.5px 6px 0 #ececec;display:flex;flex-direction:column;align-items:center;">
+        <div style="display:flex;align-items:center;gap:1.1rem;justify-content:center;margin-bottom:0.2rem;position:relative;width:100%;">
           <img src="CloVR logo.png" alt="CloVR Logo" style="height:54px;width:54px;object-fit:contain;border-radius:12px;box-shadow:0 2px 12px #2563eb22;background:#fff;">
-          <h1 style="font-family:'Poppins',sans-serif;font-size:2.3rem;letter-spacing:1px;color:#fff;text-shadow:0 2px 8px #2563eb33;margin:0;">CLOVR</h1>
+          <h1 style="font-family:'Poppins',sans-serif;font-size:2.3rem;letter-spacing:1px;color:#000;text-shadow:0 2px 8px #2563eb33;margin:0;">CLOVR</h1>
+          <div id="profile-btn-container" style="position:absolute;right:0;top:0;display:flex;align-items:center;">
+            <button id="open-auth-modal" style="background:none;border:none;outline:none;cursor:pointer;padding:0;margin:0;">
+              <span id="profile-placeholder" style="display:inline-block;width:44px;height:44px;border-radius:50%;background:#e0e7ff;box-shadow:0 1.5px 6px #2563eb22;display:flex;align-items:center;justify-content:center;font-size:1.7rem;color:#b6c2e1;overflow:hidden;">
+                <svg id="profile-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8.5" r="4.5" fill="#b6c2e1"/><ellipse cx="12" cy="17" rx="7" ry="4" fill="#b6c2e1"/></svg>
+              </span>
+            </button>
+          </div>
         </div>
-        <p style="font-size:1.08rem;color:#e0e7ff;font-family:'Poppins',sans-serif;letter-spacing:1px;margin-top:0.3rem;">Style It. Try It. CloVR It.</p>
+        <p style="font-size:1.08rem;color:#000;font-family:'Poppins',sans-serif;letter-spacing:1px;margin-top:0.3rem;">Style It. Try It. CloVR It.</p>
       </header>
 
       <!-- Upload Photo Section -->
@@ -513,7 +526,7 @@
         </div>
       </section>
     </div>
-    <script src="app.js"></script>
+  <script src="app.js" defer></script>
 <script>
 // Dynamic clothing rendering with multi-category filter and active tab highlight
 fetch('clothing-data.json')
@@ -793,7 +806,7 @@ fetch('clothing-data.json')
   <div class="container">
     
     <!-- Trigger Button for Auth Modal -->
-    <button id="open-auth-modal" style="position:fixed;top:24px;right:32px;z-index:1001;padding:0.7rem 1.5rem;background:#4285f4;color:#fff;border:none;border-radius:6px;box-shadow:0 2px 8px rgba(66,133,244,0.10);font-size:1rem;cursor:pointer;">Sign In / Register</button>
+  <!-- Profile/Login button is now in the header -->
 
     <!-- Authentication Modal -->
     <div id="auth-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:1002;align-items:center;justify-content:center;">
@@ -821,7 +834,7 @@ fetch('clothing-data.json')
     <!-- Modal logic moved to app.js -->
     <footer>
       <div style="font-size:1rem; color:var(--primary); font-weight:600; letter-spacing:1px;">
-        © 2025 CLOVR. All Rights Reserved.
+        © 2025 Akorede Abolaji. All Rights Reserved.
       </div>
     </footer>
   </div>
