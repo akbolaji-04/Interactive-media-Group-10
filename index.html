@@ -24,6 +24,114 @@
       --header-glow: none;
     }
     * { margin:0; padding:0; box-sizing:border-box; }
+    .category-tab {
+      opacity: 0.82;
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.5rem 0.6rem 1.1rem;
+      font-size: 1.08rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(90deg, #e0e7ff 0%, #f7f9fa 100%);
+      color: #2563eb;
+      box-shadow: 0 1.5px 8px rgba(66,133,244,0.08);
+      margin: 0 0.1rem;
+      position: relative;
+      transition: 
+        background 0.25s cubic-bezier(.4,0,.2,1),
+        color 0.18s cubic-bezier(.4,0,.2,1),
+        box-shadow 0.22s cubic-bezier(.4,0,.2,1),
+        transform 0.18s cubic-bezier(.4,0,.2,1),
+        opacity 0.18s cubic-bezier(.4,0,.2,1),
+        border 0.22s cubic-bezier(.4,0,.2,1);
+      outline: none;
+      border: 2px solid transparent;
+      overflow: hidden;
+    }
+    .category-tab .tab-icon {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 0.6em;
+      font-size: 1.18em;
+      opacity: 0.82;
+      transition: opacity 0.18s;
+    }
+    .category-tab.active .tab-icon,
+    .category-tab:hover .tab-icon {
+      opacity: 1;
+    }
+    .category-tab:before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; right: 0; bottom: 0;
+      border-radius: 999px;
+      z-index: 0;
+      background: radial-gradient(circle at 60% 40%, #bae6fd33 0%, #e0e7ff00 80%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s;
+    }
+    .category-tab:hover:before, .category-tab:focus:before {
+      opacity: 1;
+    }
+    .category-tab.active {
+      background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+      color: #fff;
+      box-shadow: 0 6px 24px #2563eb33, 0 2px 8px #38bdf822;
+      opacity: 1 !important;
+      border: 2px solid;
+      border-image: linear-gradient(90deg, #ff6584 0%, #38bdf8 100%) 1;
+      outline: 2px solid #ff6584;
+      outline-offset: 1.5px;
+      z-index: 2;
+      transform: scale(1.07) translateY(-3px);
+      filter: brightness(1.08) saturate(1.1);
+      animation: tabPop 0.32s cubic-bezier(.4,0,.2,1);
+    }
+    .category-tab:active .tab-ripple {
+      animation: ripple 0.5s linear;
+    }
+    .tab-ripple {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 0; height: 0;
+      background: rgba(56,189,248,0.18);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    @keyframes ripple {
+      0% { width: 0; height: 0; opacity: 0.5; }
+      80% { width: 180px; height: 180px; opacity: 0.18; }
+      100% { width: 220px; height: 220px; opacity: 0; }
+    }
+    .category-tab:hover, .category-tab:focus {
+      background: linear-gradient(90deg, #dbeafe 0%, #bae6fd 100%);
+      color: #1e40af;
+      box-shadow: 0 4px 18px #2563eb22, 0 1.5px 8px #38bdf822;
+      transform: translateY(-2px) scale(1.04);
+      opacity: 1;
+      border: 2px solid #38bdf8;
+    }
+    .category-tab.active {
+      background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+      color: #fff;
+      box-shadow: 0 6px 24px #2563eb33, 0 2px 8px #38bdf822;
+      opacity: 1 !important;
+      border: 2px solid #ff6584;
+      outline: 2px solid #ff6584;
+      outline-offset: 1.5px;
+      z-index: 2;
+      transform: scale(1.07) translateY(-3px);
+      filter: brightness(1.08) saturate(1.1);
+      animation: tabPop 0.32s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes tabPop {
+      0% { transform: scale(0.95) translateY(0); box-shadow: 0 0 0 #2563eb00; }
+      60% { transform: scale(1.10) translateY(-5px); box-shadow: 0 8px 32px #2563eb22; }
+      100% { transform: scale(1.07) translateY(-3px); }
+    }
     body {
       font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
       background: linear-gradient(135deg, #f7f9fa 0%, #e0e7ff 100%);
@@ -169,13 +277,49 @@
       box-shadow: 0 4px 16px rgba(52,168,83,0.10);
       transform: scale(1.03);
     }
+    .shirt-option-img-wrap {
+      width: 100%;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f1f5f9 60%, #e0e7ff 100%);
+      border-radius: 8px;
+      border: 1.5px solid #e0e7ff;
+      box-shadow: 0 2px 12px 0 #2563eb0a;
+      margin-bottom: 8px;
+      position: relative;
+      overflow: hidden;
+      animation: imgFadeIn 0.7s cubic-bezier(.4,0,.2,1);
+    }
     .shirt-option img {
-      width:100%; height:100px; object-fit:contain;
-      margin-bottom:8px;
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
       filter: drop-shadow(0 2px 6px rgba(66,133,244,0.07));
-      background: #fff;
+      background: transparent;
       border-radius: 6px;
-      padding: 2px;
+      transition: opacity 0.25s cubic-bezier(.4,0,.2,1);
+    }
+    .shirt-option .img-placeholder {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #b6c2e1;
+      opacity: 0.7;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+    @keyframes imgFadeIn {
+      0% { opacity: 0; transform: scale(0.96) translateY(10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
     .shirt-name {
       font-size: 1rem;
@@ -325,39 +469,42 @@
 </head>
 <body>
     <div class="container">
-      <header>
-        <h1 style="font-family:'Poppins', sans-serif; font-size:2.2rem; letter-spacing:1px; color: white; text-shadow:0 2px 8px #2563eb22;">CLOVR</h1>
-        <p style="font-size:1.08rem; color:#64748b; font-family:'Poppins', sans-serif; letter-spacing:1px; margin-top:0.3rem;">Style It. Try It. CloVR It.</p>
+      <header style="background:linear-gradient(90deg,#2563eb 0%,#38bdf8 100%);color:#fff;text-align:center;padding:2.2rem 1.2rem 1.5rem 1.2rem;border-radius:0 0 22px 22px;box-shadow:0 4px 24px #2563eb22,0 1.5px 6px #38bdf822;display:flex;flex-direction:column;align-items:center;">
+        <div style="display:flex;align-items:center;gap:1.1rem;justify-content:center;margin-bottom:0.2rem;">
+          <img src="CloVR logo.png" alt="CloVR Logo" style="height:54px;width:54px;object-fit:contain;border-radius:12px;box-shadow:0 2px 12px #2563eb22;background:#fff;">
+          <h1 style="font-family:'Poppins',sans-serif;font-size:2.3rem;letter-spacing:1px;color:#fff;text-shadow:0 2px 8px #2563eb33;margin:0;">CLOVR</h1>
+        </div>
+        <p style="font-size:1.08rem;color:#e0e7ff;font-family:'Poppins',sans-serif;letter-spacing:1px;margin-top:0.3rem;">Style It. Try It. CloVR It.</p>
       </header>
 
       <!-- Upload Photo Section -->
-      <section class="upload-section" style="margin:2rem 0 1.2rem 0;">
-        <h2 style="font-size:1.25rem;margin-bottom:0.7rem;color:#4285f4;">Upload Your Photo</h2>
+      <section class="upload-section" style="margin:2rem 0 1.2rem 0;background:linear-gradient(135deg,#f7f9fa 60%,#e0e7ff 100%);border-radius:18px;box-shadow:0 4px 18px #2563eb11;padding:1.7rem 1.5rem 1.3rem 1.5rem;">
+        <h2 style="font-size:1.25rem;margin-bottom:0.7rem;color:#2563eb;font-weight:700;">Upload Your Photo</h2>
         <p style="font-size:0.98rem;margin-bottom:1.1rem;color:#555;">For best results, use a clear, front-facing photo with good lighting.</p>
         <input type="file" id="imageUpload" accept="image/*" style="margin-bottom:1.2rem;">
       </section>
       <!-- Custom Clothing Upload (optional) -->
-      <section class="upload-section">
-        <h2 style="font-size:1.1rem;margin:1.2rem 0 0.7rem 0;color:#34a853;">Upload Custom Clothing (Optional)</h2>
+      <section class="upload-section" style="background:linear-gradient(135deg,#e0e7ff 60%,#f7f9fa 100%);border-radius:18px;box-shadow:0 4px 18px #2563eb11;padding:1.3rem 1.5rem 1.3rem 1.5rem;margin-bottom:1.2rem;">
+        <h2 style="font-size:1.1rem;margin:1.2rem 0 0.7rem 0;color:#34a853;font-weight:700;">Upload Custom Clothing (Optional)</h2>
         <input type="file" id="customClothUpload" accept="image/*" style="margin-bottom:0.7rem;">
       </section>
 
       <!-- Shirt Selection Section -->
-      <section class="shirt-selection-section" style="margin:0 0 1.2rem 0;">
-        <div style="display:flex;gap:1rem;justify-content:center;margin-bottom:1rem;">
-          <button class="category-tab" data-category="tops" style="padding:0.5rem 1.2rem;border:none;border-radius:6px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer;">Tops</button>
-          <button class="category-tab" data-category="bottoms" style="padding:0.5rem 1.2rem;border:none;border-radius:6px;background:#38bdf8;color:#fff;font-weight:600;cursor:pointer;">Bottoms</button>
-          <button class="category-tab" data-category="onepiece" style="padding:0.5rem 1.2rem;border:none;border-radius:6px;background:#fbbf24;color:#fff;font-weight:600;cursor:pointer;">One-piece</button>
-          <button class="category-tab" data-category="accessories" style="padding:0.5rem 1.2rem;border:none;border-radius:6px;background:#64748b;color:#fff;font-weight:600;cursor:pointer;">Accessories</button>
+      <section class="shirt-selection-section" style="margin:0 0 1.2rem 0;background:linear-gradient(135deg,#f7f9fa 60%,#e0e7ff 100%);border-radius:18px;box-shadow:0 4px 18px #2563eb11;padding:1.3rem 1.5rem 1.3rem 1.5rem;">
+        <div style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center;">
+          <button class="category-tab" data-category="tops"><span class="tab-icon">👕</span>Tops<span class="tab-ripple"></span></button>
+          <button class="category-tab" data-category="bottoms"><span class="tab-icon">👖</span>Bottoms<span class="tab-ripple"></span></button>
+          <button class="category-tab" data-category="onepiece"><span class="tab-icon">👗</span>One-piece<span class="tab-ripple"></span></button>
+          <button class="category-tab" data-category="accessories"><span class="tab-icon">🕶️</span>Accessories<span class="tab-ripple"></span></button>
         </div>
-        <div class="shirt-grid" id="shirtGrid"></div>
+        <div class="shirt-grid" id="shirtGrid" style="background:rgba(255,255,255,0.92);border-radius:14px;box-shadow:0 2px 10px #2563eb0a;padding:1.2rem 0;"></div>
       </section>
 
       <!-- Try-On Canvas & Actions Section -->
-      <section class="canvas-section" style="margin:0 0 2rem 0;">
-        <div class="canvas-container" id="canvasContainer">
+      <section class="canvas-section" style="margin:0 0 2rem 0;background:linear-gradient(135deg,#e0e7ff 60%,#f7f9fa 100%);border-radius:18px;box-shadow:0 4px 18px #2563eb11;padding:1.3rem 1.5rem 1.3rem 1.5rem;">
+        <div class="canvas-container" id="canvasContainer" style="background:linear-gradient(135deg,#f7f9fa 60%,#e0e7ff 100%);border-radius:14px;box-shadow:0 2px 12px #2563eb11;">
           <div class="spinner" id="spinner" style="display:none;"></div>
-          <canvas id="tryon-canvas" width="320" height="400" style="width:100%;background:#f7f9fa;border:1px solid #e0e7ff;border-radius:8px;"></canvas>
+          <canvas id="tryon-canvas" width="320" height="400" style="width:100%;background:#f7f9fa;border:1.5px solid #e0e7ff;border-radius:10px;"></canvas>
           <img id="result-img" style="display:none;" alt="Result">
         </div>
         <div class="btn-group-extra">
@@ -368,29 +515,77 @@
     </div>
     <script src="app.js"></script>
 <script>
-// Dynamic clothing rendering by category
+// Dynamic clothing rendering with multi-category filter and active tab highlight
 fetch('clothing-data.json')
   .then(res => res.json())
   .then(data => {
     const shirtGrid = document.getElementById('shirtGrid');
     const tabs = document.querySelectorAll('.category-tab');
-    let currentCategory = 'tops';
+    let selectedCategories = new Set(['tops']);
 
-    function renderGrid(category) {
+    function renderGrid() {
       shirtGrid.innerHTML = '';
-      data.filter(item => item.category === category).forEach(item => {
+      const filtered = data.filter(item => selectedCategories.has(item.category));
+      if (filtered.length === 0) {
+        // Refined placeholder for empty state
+        shirtGrid.innerHTML = `
+          <div style="grid-column: 1/-1; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 180px; padding: 2.5rem 0 2rem 0; background:linear-gradient(135deg,#f7f9fa 60%,#e0e7ff 100%);border-radius:12px;box-shadow:0 2px 12px #2563eb11;">
+            <svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom: 1.1rem;">
+              <rect x="8" y="8" width="72" height="72" rx="16" fill="#e0e7ff"/>
+              <path d="M28 60L40 44L52 58L60 50L76 72H12L28 60Z" fill="#b6c2e1"/>
+              <circle cx="34" cy="34" r="7" fill="#b6c2e1"/>
+            </svg>
+            <div style="color:#b6c2e1;font-size:1.08rem;font-weight:500;letter-spacing:0.2px;">No clothing options available.<br>Select a category or check back soon!</div>
+          </div>
+        `;
+        return;
+      }
+      filtered.forEach(item => {
         const div = document.createElement('div');
         div.className = 'shirt-option';
         div.dataset.src = item.src;
-        div.innerHTML = `<img src="${item.src}" alt><div class="shirt-name">${item.name}</div>`;
+        // Image wrapper with fallback SVG icon
+        div.style = 'background:linear-gradient(135deg,#f7f9fa 60%,#e0e7ff 100%);border-radius:10px;box-shadow:0 2px 12px #2563eb11;padding:8px 8px 12px 8px;display:flex;flex-direction:column;align-items:center;position:relative;transition:box-shadow .2s,border .2s;min-width:110px;margin-bottom:2px;';
+        div.onmouseover = () => { div.style.boxShadow = '0 6px 24px #2563eb22,0 2px 8px #38bdf822'; div.style.border = '2px solid #38bdf8'; };
+        div.onmouseout = () => { div.style.boxShadow = '0 2px 12px #2563eb11'; div.style.border = 'none'; };
+        div.innerHTML = `
+          <div class="shirt-option-img-wrap" style="background:linear-gradient(135deg,#e0e7ff 60%,#f7f9fa 100%);border-radius:8px;box-shadow:0 1.5px 6px #2563eb0a;">
+            <img src="${item.src}" alt loading="lazy" onerror="this.style.display='none';this.parentNode.querySelector('.img-placeholder').style.display='flex';">
+            <span class="img-placeholder" style="display:none;">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="6" y="6" width="36" height="36" rx="8" fill="#e0e7ff"/>
+                <path d="M16 32L22 24L28 30L32 26L38 34H10L16 32Z" fill="#b6c2e1"/>
+                <circle cx="18" cy="18" r="3" fill="#b6c2e1"/>
+              </svg>
+            </span>
+          </div>
+          <div class="shirt-name" style="font-weight:600;color:#2563eb;margin-top:4px;">${item.name}</div>
+          <button class="add-to-moodboard-btn" style="margin-top:6px;background:#fff0f5;border:1.5px solid #ff6584;color:#ff6584;border-radius:6px;padding:0.2rem 0.7rem;font-size:0.98rem;cursor:pointer;display:flex;align-items:center;gap:0.3rem;transition:background .2s;">
+            <span title="Add to Moodboard" style="font-size:1.05rem;line-height:1;">📌</span>
+          </button>
+        `;
         shirtGrid.appendChild(div);
+        // Moodboard button logic
+        div.querySelector('.add-to-moodboard-btn').onclick = function(e) {
+          e.stopPropagation();
+          window.addToMoodboard(item.src, item.name, [item.category]);
+        };
       });
       // Re-attach click logic for new items
       const customClothUpload = document.getElementById('customClothUpload');
       let customClothFile = customClothUpload && customClothUpload.files && customClothUpload.files[0];
       document.querySelectorAll('.shirt-option').forEach(opt => {
         opt.addEventListener('click', () => {
-          if (customClothFile) return;
+          // If a custom file is uploaded, don't allow template selection
+          const customClothUpload = document.getElementById('customClothUpload');
+          let customClothFile = customClothUpload && customClothUpload.files && customClothUpload.files[0];
+          if (customClothFile) {
+            // Deselect all templates
+            document.querySelectorAll('.shirt-option').forEach(o => o.classList.remove('selected'));
+            window.selectedShirt = null;
+            if (window.updateState) window.updateState();
+            return;
+          }
           document.querySelectorAll('.shirt-option').forEach(o => o.classList.remove('selected'));
           opt.classList.add('selected');
           window.selectedShirt = opt.dataset.src;
@@ -400,16 +595,39 @@ fetch('clothing-data.json')
     }
 
     tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.style.opacity = 0.7);
-        tab.style.opacity = 1;
-        currentCategory = tab.dataset.category;
-        renderGrid(currentCategory);
+      tab.addEventListener('click', (e) => {
+        const cat = tab.dataset.category;
+        // Ripple effect
+        const ripple = tab.querySelector('.tab-ripple');
+        if (ripple) {
+          ripple.style.animation = 'none';
+          ripple.offsetHeight; // force reflow
+          ripple.style.animation = null;
+        }
+        if (selectedCategories.has(cat)) {
+          if (selectedCategories.size > 1) {
+            selectedCategories.delete(cat);
+          }
+        } else {
+          selectedCategories.add(cat);
+        }
+        // Update tab active state
+        tabs.forEach(t => {
+          if (selectedCategories.has(t.dataset.category)) {
+            t.classList.add('active');
+          } else {
+            t.classList.remove('active');
+          }
+        });
+        renderGrid();
       });
     });
     // Initial render
-    renderGrid(currentCategory);
-    tabs[0].style.opacity = 1;
+    tabs.forEach(t => {
+      if (selectedCategories.has(t.dataset.category)) t.classList.add('active');
+      else t.classList.remove('active');
+    });
+    renderGrid();
   });
 </script>
 <script>
@@ -497,6 +715,17 @@ fetch('clothing-data.json')
   }); }
   function imgURLtoDataURL(url){ return fetch(url).then(r=>r.blob()).then(blob=>toDataURL(blob)); }
 
+
+  // Archive helper
+  function archiveResult(imgUrl) {
+    if (!imgUrl) return;
+    let archive = JSON.parse(localStorage.getItem('clovr-archive') || '[]');
+    // Avoid duplicate consecutive saves
+    if (archive.length && archive[archive.length-1].img === imgUrl) return;
+    archive.push({ img: imgUrl, ts: Date.now(), liked: false });
+    localStorage.setItem('clovr-archive', JSON.stringify(archive));
+  }
+
   tryBtn.addEventListener('click', async ()=>{
     if (!userFile) {
       alert('Please select an image under 2MB.');
@@ -533,12 +762,30 @@ fetch('clothing-data.json')
       if(status==='completed'&&output?.length){
         resultImg.src=output[0]; resultImg.style.display='block';
         downloadBtn.disabled=false;
+        // Archive the result automatically
+        archiveResult(output[0]);
+        // Add Moodboard button below result
+        let mbBtn = document.getElementById('add-to-moodboard-result');
+        if (!mbBtn) {
+          mbBtn = document.createElement('button');
+          mbBtn.id = 'add-to-moodboard-result';
+          mbBtn.innerHTML = '<span style="font-size:1.1rem;">📌</span> Moodboard';
+          mbBtn.innerHTML = '<span title="Add to Moodboard" style="font-size:1.05rem;line-height:1;">📌</span>';
+          mbBtn.style = 'margin:1.1rem auto 0 auto;display:block;background:#fff0f5;border:1.5px solid #ff6584;color:#ff6584;border-radius:50%;padding:0.25rem 0.5rem;font-size:1.05rem;cursor:pointer;transition:background .2s;width:2.1rem;height:2.1rem;display:flex;align-items:center;justify-content:center;';
+          resultImg.parentNode.appendChild(mbBtn);
+        }
+        mbBtn.onclick = function() {
+          window.addToMoodboard(output[0], 'Try-On Result', ['tryon']);
+        };
+        mbBtn.style.display = 'block';
       } else throw new Error('Prediction failed');
     } catch(err){ spinner.style.display='none'; alert('Error: '+err.message); }
   });
 
   downloadBtn.addEventListener('click', ()=>{
     if(!resultImg.src) return;
+    // Archive on save as well (if not already archived)
+    archiveResult(resultImg.src);
     const a=document.createElement('a'); a.href=resultImg.src; a.download='try-on-result.png'; a.click();
   });
 })();
@@ -579,6 +826,202 @@ fetch('clothing-data.json')
     </footer>
   </div>
   <div id="instructionModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(44,62,80,0.32); justify-content:center; align-items:center;">
+  <!-- Archive Button -->
+  <button id="open-archive-btn" style="position:fixed;top:24px;left:32px;z-index:1001;padding:0.7rem 1.5rem;background:#fff;color:#2563eb;border:2px solid #2563eb;border-radius:6px;box-shadow:0 2px 8px rgba(66,133,244,0.10);font-size:1rem;cursor:pointer;display:flex;align-items:center;gap:0.5rem;">
+    <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="4" rx="2" fill="#2563eb" opacity=".12"/><rect x="5" y="9" width="14" height="10" rx="2" fill="#2563eb" opacity=".18"/><rect x="9" y="13" width="6" height="2" rx="1" fill="#2563eb"/></svg>
+    Archive
+  </button>
+  <!-- Moodboard Button -->
+  <button id="open-moodboard-btn" style="position:fixed;top:24px;left:160px;z-index:1001;padding:0.7rem 1.5rem;background:#fff;color:#ff6584;border:2px solid #ff6584;border-radius:6px;box-shadow:0 2px 8px rgba(255,101,132,0.10);font-size:1rem;cursor:pointer;display:flex;align-items:center;gap:0.5rem;">
+    <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="4" rx="2" fill="#ff6584" opacity=".12"/><rect x="5" y="9" width="14" height="10" rx="2" fill="#ff6584" opacity=".18"/><rect x="9" y="13" width="6" height="2" rx="1" fill="#ff6584"/></svg>
+    Moodboard
+  </button>
+  <!-- Moodboard Modal -->
+  <div id="moodboardModal" style="display:none; position:fixed; z-index:10001; left:0; top:0; width:100vw; height:100vh; background:rgba(44,62,80,0.32); justify-content:center; align-items:center;">
+    <div style="background:#fff; border-radius:22px; box-shadow:0 12px 40px #ff658422, 0 2px 8px #ff658422; max-width:95vw; width:480px; padding:2.2rem 1.5rem 1.5rem 1.5rem; text-align:center; position:relative; min-height:340px; display:flex; flex-direction:column; align-items:center; border:1.5px solid #ff6584; animation:fadeIn .5s;">
+      <button id="closeMoodboardModal" aria-label="Close moodboard" style="position:absolute; top:18px; right:18px; background:none; border:none; font-size:1.5rem; color:#ff6584; cursor:pointer;">&times;</button>
+      <h2 style="color:#ff6584; font-size:1.25rem; margin-bottom:0.7rem; font-weight:700; letter-spacing:0.5px;">Your Moodboards</h2>
+      <div id="moodboardList" style="width:100%; margin-bottom:1.2rem;"></div>
+      <button id="createMoodboardBtn" style="background:linear-gradient(90deg,#ffe0e7 0%,#fff0f5 100%);border:1.5px solid #ff6584;border-radius:8px;padding:0.3rem 0.9rem;font-size:1rem;cursor:pointer;margin-bottom:1.2rem;">+ Create New Board</button>
+      <div id="moodboardGrid" style="width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:18px; margin-top:0.7rem; justify-items:center;"></div>
+      <div id="moodboardEmpty" style="color:#ffb6c1; font-size:1.08rem; font-weight:500; letter-spacing:0.2px; margin-top:2.5rem; display:none;">No inspiration yet.<br>Add outfits or images to your moodboard!</div>
+    </div>
+  </div>
+<script>
+// Moodboard Logic
+document.addEventListener('DOMContentLoaded', function() {
+  const openMoodboardBtn = document.getElementById('open-moodboard-btn');
+  const moodboardModal = document.getElementById('moodboardModal');
+  const closeMoodboardModal = document.getElementById('closeMoodboardModal');
+  const moodboardList = document.getElementById('moodboardList');
+  const moodboardGrid = document.getElementById('moodboardGrid');
+  const moodboardEmpty = document.getElementById('moodboardEmpty');
+  const createMoodboardBtn = document.getElementById('createMoodboardBtn');
+
+  function getMoodboards() {
+    return JSON.parse(localStorage.getItem('clovr-moodboards') || '[]');
+  }
+  function saveMoodboards(moodboards) {
+    localStorage.setItem('clovr-moodboards', JSON.stringify(moodboards));
+  }
+  let selectedBoardIdx = 0;
+
+  function renderMoodboardList() {
+    const moodboards = getMoodboards();
+    moodboardList.innerHTML = '';
+    if (!moodboards.length) {
+      moodboardList.innerHTML = '<div style="color:#ffb6c1;font-size:1.05rem;margin-bottom:0.7rem;">No boards yet. Create one!</div>';
+      moodboardGrid.innerHTML = '';
+      moodboardEmpty.style.display = 'block';
+      return;
+    }
+    moodboardList.innerHTML = moodboards.map((b,i) => `<button class="moodboard-tab${i===selectedBoardIdx?' active':''}" data-idx="${i}" style="margin:0 0.3rem 0.7rem 0.3rem;padding:0.5rem 1.2rem;border-radius:999px;border:1.5px solid #ff6584;background:${i===selectedBoardIdx?'#ff6584':'#fff'};color:${i===selectedBoardIdx?'#fff':'#ff6584'};font-weight:600;cursor:pointer;">${b.title||'Untitled Board'}</button>`).join('');
+    moodboardEmpty.style.display = 'none';
+    renderMoodboardGrid();
+    // Tab click
+    moodboardList.querySelectorAll('.moodboard-tab').forEach(btn => {
+      btn.onclick = function() {
+        selectedBoardIdx = +btn.dataset.idx;
+        renderMoodboardList();
+      };
+    });
+  }
+  function renderMoodboardGrid() {
+    const moodboards = getMoodboards();
+    if (!moodboards.length) { moodboardGrid.innerHTML = ''; moodboardEmpty.style.display = 'block'; return; }
+    const board = moodboards[selectedBoardIdx];
+    if (!board || !board.items || !board.items.length) {
+      moodboardGrid.innerHTML = '';
+      moodboardEmpty.style.display = 'block';
+      return;
+    }
+    moodboardEmpty.style.display = 'none';
+    moodboardGrid.innerHTML = board.items.map((item,idx) => `
+      <div style="background:linear-gradient(135deg,#fff0f5 60%,#ffe0e7 100%);border-radius:12px;box-shadow:0 2px 12px #ff658411;padding:7px 7px 10px 7px;display:flex;flex-direction:column;align-items:center;position:relative;min-width:90px;max-width:120px;">
+        <img src="${item.img}" alt="Mood" style="width:68px;height:82px;object-fit:cover;border-radius:7px;border:1.2px solid #ffb6c1;box-shadow:0 1.5px 6px #ff65840a;cursor:pointer;">
+        <div style="font-size:0.93rem;color:#ff6584;font-weight:600;margin-top:0.18rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;">${item.caption||''}</div>
+        <div style="font-size:0.89rem;color:#b6c2e1;margin-top:0.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px;">${item.tags?item.tags.map(t=>`#${t}`).join(' '):''}</div>
+        <button class="remove-moodboard-item" data-idx="${idx}" title="Remove" style="position:absolute;top:4px;right:4px;background:none;border:none;font-size:1.05rem;color:#e11d48;cursor:pointer;">&times;</button>
+      </div>
+    `).join('');
+    // Remove logic
+    moodboardGrid.querySelectorAll('.remove-moodboard-item').forEach(btn => {
+      btn.onclick = function() {
+        const idx = +btn.dataset.idx;
+        const moodboards = getMoodboards();
+        moodboards[selectedBoardIdx].items.splice(idx,1);
+        saveMoodboards(moodboards);
+        renderMoodboardGrid();
+      };
+    });
+  }
+  openMoodboardBtn.onclick = () => { moodboardModal.style.display = 'flex'; renderMoodboardList(); };
+  closeMoodboardModal.onclick = () => { moodboardModal.style.display = 'none'; };
+  moodboardModal.addEventListener('click', e => { if (e.target === moodboardModal) moodboardModal.style.display = 'none'; });
+  createMoodboardBtn.onclick = function() {
+    const title = prompt('Board title? (e.g. Summer Vibes)') || 'Untitled Board';
+    const moodboards = getMoodboards();
+    moodboards.push({ title, items: [] });
+    saveMoodboards(moodboards);
+    selectedBoardIdx = moodboards.length-1;
+    renderMoodboardList();
+  };
+
+  // Add to moodboard logic (global, can be called from anywhere)
+  // Add to Moodboard Modal
+  if (!document.getElementById('addMoodboardModal')) {
+    const modal = document.createElement('div');
+    modal.id = 'addMoodboardModal';
+    modal.style = 'display:none;position:fixed;z-index:10002;left:0;top:0;width:100vw;height:100vh;background:rgba(44,62,80,0.32);justify-content:center;align-items:center;';
+    modal.innerHTML = `
+      <div style="background:linear-gradient(120deg,#e0e7ff 60%,#f7f9fa 100%);border-radius:18px;box-shadow:0 8px 32px #2563eb22;max-width:95vw;width:350px;padding:1.7rem 1.2rem 1.2rem 1.2rem;text-align:center;position:relative;display:flex;flex-direction:column;align-items:center;border:1.5px solid #2563eb;animation:fadeIn .4s;">
+        <button id="closeAddMoodboardModal" aria-label="Close" style="position:absolute;top:14px;right:14px;background:none;border:none;font-size:1.3rem;color:#2563eb;cursor:pointer;">&times;</button>
+        <img id="addMoodboardImg" src="" alt="Preview" style="width:90px;height:110px;object-fit:cover;border-radius:9px;border:1.5px solid #bae6fd;box-shadow:0 1.5px 6px #2563eb0a;margin-bottom:0.7rem;" />
+        <div style="margin-bottom:0.7rem;width:100%;">
+          <label for="addMoodboardBoard" style="font-size:1rem;color:#2563eb;font-weight:600;">Moodboard:</label>
+          <select id="addMoodboardBoard" style="width:100%;margin-top:0.3rem;padding:0.3rem 0.5rem;border-radius:7px;border:1.5px solid #2563eb;font-size:1rem;background:#fff;box-shadow:0 1.5px 6px #2563eb0a;"></select>
+        </div>
+        <input id="addMoodboardCaption" type="text" placeholder="Caption/Note" style="width:100%;margin-bottom:0.5rem;padding:0.3rem 0.5rem;border-radius:7px;border:1.5px solid #bae6fd;font-size:1rem;background:#f7f9fa;" />
+        <input id="addMoodboardTags" type="text" placeholder="Tags (comma separated)" style="width:100%;margin-bottom:0.8rem;padding:0.3rem 0.5rem;border-radius:7px;border:1.5px solid #bae6fd;font-size:1rem;background:#f7f9fa;" />
+        <div style="display:flex;gap:0.7rem;justify-content:center;width:100%;">
+          <button id="addMoodboardCancel" style="background:#fff;border:1.5px solid #2563eb;color:#2563eb;border-radius:8px;padding:0.3rem 1.1rem;font-size:1rem;cursor:pointer;">Cancel</button>
+          <button id="addMoodboardConfirm" style="background:linear-gradient(90deg,#2563eb 0%,#38bdf8 100%);border:none;color:#fff;border-radius:8px;padding:0.3rem 1.1rem;font-size:1rem;cursor:pointer;font-weight:600;box-shadow:0 1.5px 6px #2563eb0a;">Add</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  window.addToMoodboard = function(img, caption, tags) {
+    let moodboards = getMoodboards();
+    const modal = document.getElementById('addMoodboardModal');
+    const imgEl = document.getElementById('addMoodboardImg');
+    const boardSel = document.getElementById('addMoodboardBoard');
+    const captionInput = document.getElementById('addMoodboardCaption');
+    const tagsInput = document.getElementById('addMoodboardTags');
+    imgEl.src = img;
+    captionInput.value = caption || '';
+    tagsInput.value = tags ? tags.join(',') : '';
+    // Populate board select
+    boardSel.innerHTML = '';
+    if (!moodboards.length) {
+      const title = prompt('No moodboards yet. Enter board title:') || 'Untitled Board';
+      moodboards.push({ title, items: [] });
+      saveMoodboards(moodboards);
+    }
+    moodboards = getMoodboards();
+    moodboards.forEach((b,i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = b.title;
+      boardSel.appendChild(opt);
+    });
+    modal.style.display = 'flex';
+    // Handlers
+    document.getElementById('closeAddMoodboardModal').onclick = document.getElementById('addMoodboardCancel').onclick = function() {
+      modal.style.display = 'none';
+    };
+    document.getElementById('addMoodboardConfirm').onclick = function() {
+      const idx = parseInt(boardSel.value);
+      const cap = captionInput.value.trim();
+      const tagArr = tagsInput.value.split(',').map(t=>t.trim()).filter(Boolean);
+      moodboards[idx].items.push({ img, caption: cap, tags: tagArr });
+      saveMoodboards(moodboards);
+      modal.style.display = 'none';
+      // Optionally show a toast/alert
+      if (window.showToast) window.showToast('Added to moodboard!');
+    };
+  };
+});
+</script>
+  <!-- Archive Modal -->
+  <div id="archiveModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(44,62,80,0.32); justify-content:center; align-items:center;">
+    <div style="background:#fff; border-radius:22px; box-shadow:0 12px 40px #2563eb22, 0 2px 8px #38bdf822; max-width:95vw; width:440px; padding:2.2rem 1.5rem 1.5rem 1.5rem; text-align:center; position:relative; min-height:340px; display:flex; flex-direction:column; align-items:center; border:1.5px solid #e0e7ff; animation:fadeIn .5s;">
+      <button id="closeArchiveModal" aria-label="Close archive" style="position:absolute; top:18px; right:18px; background:none; border:none; font-size:1.5rem; color:#4285f4; cursor:pointer;">&times;</button>
+      <h2 style="color:#2563eb; font-size:1.25rem; margin-bottom:0.7rem; font-weight:700; letter-spacing:0.5px;">Your Archive</h2>
+      <div style="display:flex;gap:0.7rem;align-items:center;justify-content:space-between;width:100%;margin-bottom:0.7rem;">
+        <select id="archiveSort" style="padding:0.3rem 0.7rem;border-radius:8px;border:1.5px solid #e0e7ff;font-size:1rem;background:#f7f9fa;box-shadow:0 1.5px 6px #2563eb0a;transition:box-shadow .2s;outline:none;">
+          <option value="date-desc">Newest</option>
+          <option value="date-asc">Oldest</option>
+          <option value="liked">Liked</option>
+        </select>
+        <button id="archiveExport" style="background:linear-gradient(90deg,#e0e7ff 0%,#bae6fd 100%);border:1.5px solid #e0e7ff;border-radius:8px;padding:0.3rem 0.9rem;font-size:1rem;cursor:pointer;transition:background .2s,box-shadow .2s;box-shadow:0 1.5px 6px #2563eb0a;">Export</button>
+        <label style="background:linear-gradient(90deg,#e0e7ff 0%,#bae6fd 100%);border:1.5px solid #e0e7ff;border-radius:8px;padding:0.3rem 0.9rem;font-size:1rem;cursor:pointer;transition:background .2s,box-shadow .2s;box-shadow:0 1.5px 6px #2563eb0a;">
+          Import<input id="archiveImport" type="file" accept="application/json" style="display:none;">
+        </label>
+      </div>
+      <div id="archiveGrid" style="width:100%; display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:18px; margin-top:1.2rem; justify-items:center;"></div>
+      <div id="archiveEmpty" style="color:#b6c2e1; font-size:1.08rem; font-weight:500; letter-spacing:0.2px; margin-top:2.5rem; display:none;">No saved try-ons yet.<br>Try on an outfit and save it!</div>
+      <!-- Lightbox Preview -->
+      <div id="archiveLightbox" style="display:none;position:fixed;z-index:10000;left:0;top:0;width:100vw;height:100vh;background:rgba(44,62,80,0.45);align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:1.2rem 1.2rem 0.7rem 1.2rem;border-radius:18px;box-shadow:0 12px 40px #2563eb22,0 2px 8px #38bdf822;max-width:95vw;width:340px;position:relative;display:flex;flex-direction:column;align-items:center;border:1.5px solid #e0e7ff;animation:fadeIn .4s;">
+          <button id="closeArchiveLightbox" style="position:absolute;top:10px;right:10px;background:none;border:none;font-size:1.3rem;color:#4285f4;cursor:pointer;">&times;</button>
+          <img id="archiveLightboxImg" src="" alt="Preview" style="width:100%;max-width:300px;max-height:340px;object-fit:contain;border-radius:12px;box-shadow:0 2px 12px #2563eb11;">
+          <div id="archiveLightboxNote" style="margin-top:0.7rem;color:#2563eb;font-size:1.08rem;font-weight:500;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
     <div style="background:#fff; border-radius:18px; box-shadow:0 8px 32px rgba(66,133,244,0.18); max-width:95vw; width:370px; padding:2.2rem 1.5rem 1.5rem 1.5rem; text-align:center; position:relative;">
       <button id="closeInstructionModal" aria-label="Close instructions" style="position:absolute; top:18px; right:18px; background:none; border:none; font-size:1.5rem; color:#4285f4; cursor:pointer;">&times;</button>
       <h2 style="color:#4285f4; font-size:1.3rem; margin-bottom:0.7rem; font-weight:700; letter-spacing:0.5px;">Welcome to the Virtual Try-On App</h2>
@@ -594,4 +1037,144 @@ fetch('clothing-data.json')
   </div>
   <!-- All main JS moved to app.js -->
 </body>
+<script>
+// Archive Modal Logic
+document.addEventListener('DOMContentLoaded', function() {
+  const openArchiveBtn = document.getElementById('open-archive-btn');
+  const archiveModal = document.getElementById('archiveModal');
+  const closeArchiveModal = document.getElementById('closeArchiveModal');
+  const archiveGrid = document.getElementById('archiveGrid');
+  const archiveEmpty = document.getElementById('archiveEmpty');
+  const archiveSort = document.getElementById('archiveSort');
+  const archiveExport = document.getElementById('archiveExport');
+  const archiveImport = document.getElementById('archiveImport');
+  const archiveLightbox = document.getElementById('archiveLightbox');
+  const archiveLightboxImg = document.getElementById('archiveLightboxImg');
+  const archiveLightboxNote = document.getElementById('archiveLightboxNote');
+  const closeArchiveLightbox = document.getElementById('closeArchiveLightbox');
+
+  function renderArchive() {
+    let archive = JSON.parse(localStorage.getItem('clovr-archive') || '[]');
+    // Sort/filter
+    if (archiveSort.value === 'date-asc') archive = archive.slice();
+    else if (archiveSort.value === 'date-desc') archive = archive.slice().reverse();
+    else if (archiveSort.value === 'liked') archive = archive.filter(x=>x.liked).reverse();
+    archiveGrid.innerHTML = '';
+    if (!archive.length) {
+      archiveEmpty.style.display = 'block';
+      return;
+    }
+    archiveEmpty.style.display = 'none';
+    archive.forEach((item, idx) => {
+      const div = document.createElement('div');
+      div.style = 'background:linear-gradient(135deg,#f7f9fa 60%,#e0e7ff 100%);border-radius:12px;box-shadow:0 2px 12px #2563eb11;padding:10px 10px 14px 10px;display:flex;flex-direction:column;align-items:center;position:relative;transition:box-shadow .2s,border .2s;min-width:110px;';
+      div.onmouseover = () => { div.style.boxShadow = '0 6px 24px #2563eb22,0 2px 8px #38bdf822'; div.style.border = '2px solid #38bdf8'; };
+      div.onmouseout = () => { div.style.boxShadow = '0 2px 12px #2563eb11'; div.style.border = 'none'; };
+      div.innerHTML = `
+        <img src="${item.img}" alt="Saved fit" class="archive-preview-img" data-idx="${idx}" style="width:90px;height:110px;object-fit:cover;border-radius:9px;border:1.5px solid #e0e7ff;box-shadow:0 1.5px 6px #2563eb0a;cursor:pointer;transition:box-shadow .2s,border .2s;">
+        <textarea class="archive-note" data-idx="${idx}" placeholder="Add note/tags..." style="width:90px;min-height:32px;resize:vertical;margin-top:0.4rem;border-radius:8px;border:1.5px solid #e0e7ff;font-size:0.97rem;padding:3px 7px;transition:border .2s,box-shadow .2s;box-shadow:0 1.5px 6px #2563eb0a;outline:none;">${item.note||''}</textarea>
+        <div style="display:flex;gap:0.5rem;justify-content:center;margin-top:0.5rem;">
+          <button class="archive-like-btn" data-idx="${idx}" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:${item.liked?'#ff6584':'#b6c2e1'};transition:color .2s,transform .2s;outline:none;">&#10084;</button>
+          <button class="archive-save-btn" data-idx="${idx}" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:#2563eb;transition:color .2s,transform .2s;outline:none;">&#128190;</button>
+          <button class="archive-delete-btn" data-idx="${idx}" style="background:none;border:none;cursor:pointer;font-size:1.3rem;color:#e11d48;transition:color .2s,transform .2s;outline:none;">&#128465;</button>
+          <button class="add-to-moodboard-archive-btn" data-idx="${idx}" title="Add to Moodboard" style="background:#fff0f5;border:1.5px solid #ff6584;color:#ff6584;border-radius:50%;padding:0.18rem 0.45rem;font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;width:1.8rem;height:1.8rem;">📌</button>
+        </div>
+      `;
+      archiveGrid.appendChild(div);
+      // Moodboard button logic
+      div.querySelector('.add-to-moodboard-archive-btn').onclick = function(e) {
+        e.stopPropagation();
+        const archive = JSON.parse(localStorage.getItem('clovr-archive') || '[]');
+        window.addToMoodboard(archive[idx].img, archive[idx].note || 'Saved Fit', ['archive']);
+      };
+    });
+    // Like button logic
+    archiveGrid.querySelectorAll('.archive-like-btn').forEach(btn => {
+      btn.onclick = function() {
+        const idx = +btn.dataset.idx;
+        const archive = JSON.parse(localStorage.getItem('clovr-archive') || '[]');
+        archive[idx].liked = !archive[idx].liked;
+        localStorage.setItem('clovr-archive', JSON.stringify(archive));
+        renderArchive();
+      };
+    });
+    // Save/download button logic
+    archiveGrid.querySelectorAll('.archive-save-btn').forEach(btn => {
+      btn.onclick = function() {
+        const idx = +btn.dataset.idx;
+        const archive = JSON.parse(localStorage.getItem('clovr-archive') || '[]');
+        const a = document.createElement('a');
+        a.href = archive[idx].img;
+        a.download = 'clovr-fit.png';
+        a.click();
+      };
+    });
+    // Delete button logic
+    archiveGrid.querySelectorAll('.archive-delete-btn').forEach(btn => {
+      btn.onclick = function() {
+        const idx = +btn.dataset.idx;
+        let archive = JSON.parse(localStorage.getItem('clovr-archive') || '[]');
+        if (confirm('Delete this fit from archive?')) {
+          archive.splice(idx,1);
+          localStorage.setItem('clovr-archive', JSON.stringify(archive));
+          renderArchive();
+        }
+      };
+    });
+    // Note/tags logic
+    archiveGrid.querySelectorAll('.archive-note').forEach(note => {
+      note.onchange = function() {
+        const idx = +note.dataset.idx;
+        const archive = JSON.parse(localStorage.getItem('clovr-archive') || '[]');
+        archive[idx].note = note.value;
+        localStorage.setItem('clovr-archive', JSON.stringify(archive));
+      };
+    });
+    // Preview (lightbox)
+    archiveGrid.querySelectorAll('.archive-preview-img').forEach(img => {
+      img.onclick = function() {
+        const idx = +img.dataset.idx;
+        const archive = JSON.parse(localStorage.getItem('clovr-archive') || '[]');
+        archiveLightboxImg.src = archive[idx].img;
+        archiveLightboxNote.textContent = archive[idx].note || '';
+        archiveLightbox.style.display = 'flex';
+      };
+    });
+  }
+  openArchiveBtn.onclick = () => { archiveModal.style.display = 'flex'; renderArchive(); };
+  closeArchiveModal.onclick = () => { archiveModal.style.display = 'none'; };
+  archiveModal.addEventListener('click', e => { if (e.target === archiveModal) archiveModal.style.display = 'none'; });
+  archiveSort.onchange = renderArchive;
+  // Export
+  archiveExport.onclick = function() {
+    const archive = localStorage.getItem('clovr-archive') || '[]';
+    const blob = new Blob([archive], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'clovr-archive.json';
+    a.click();
+  };
+  // Import
+  archiveImport.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (!Array.isArray(imported)) throw new Error('Invalid archive format');
+        localStorage.setItem('clovr-archive', JSON.stringify(imported));
+        renderArchive();
+        alert('Archive imported!');
+      } catch {
+        alert('Invalid archive file.');
+      }
+    };
+    reader.readAsText(file);
+  };
+  // Lightbox close
+  closeArchiveLightbox.onclick = () => { archiveLightbox.style.display = 'none'; };
+  archiveLightbox.onclick = e => { if (e.target === archiveLightbox) archiveLightbox.style.display = 'none'; };
+});
+</script>
 </html>
