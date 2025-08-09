@@ -1,4 +1,5 @@
 // ...existing code (one set only, no duplicates)...
+
 const firebaseConfig = {
   apiKey: "AIzaSyAlDqliy8paoUMvQzYZmM2YZ-qeUBXhbqk",
   authDomain: "clovr-e1fec.firebaseapp.com",
@@ -13,6 +14,96 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
+const REMOVE_BG_KEY = 'NmeuhmwYFeh48ySGMZehsrVo';
+const API_KEY = 'fa-P6CHIRRwllKr-vxrnZlwkXBxx5ibCo81xMRBp';
+const RUN_URL = 'https://api.fashn.ai/v1/run';
+const STATUS_URL = 'https://api.fashn.ai/v1/status/';
+const PAYSTACK_KEY = 'sk_test_27830de011b1b57cf83a852f2eb2e2b93a451fd1';
+
+// DOM refs
+// Profile button logic
+document.addEventListener('DOMContentLoaded', function() {
+  const profileBtn = document.getElementById('open-auth-modal');
+  const authModal = document.getElementById('auth-modal');
+  if (profileBtn && authModal) {
+    profileBtn.addEventListener('click', () => {
+      authModal.style.display = 'flex';
+    });
+  }
+});
+
+// Update profile placeholder after login
+  auth.onAuthStateChanged(async function(user) {
+  const profilePlaceholder = document.getElementById('profile-placeholder');
+  if (user && profilePlaceholder) {
+    if (user.photoURL) {
+      profilePlaceholder.innerHTML = `<img src="${user.photoURL}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    } else if (user.email) {
+      // Show first letter of email as fallback
+      profilePlaceholder.innerHTML = `<span style='font-size:1.5rem;color:#fff;'>${user.email[0].toUpperCase()}</span>`;
+    }
+  } else if (profilePlaceholder) {
+    // Reset to default SVG
+    profilePlaceholder.innerHTML = `<svg id=\"profile-svg\" width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"8.5\" r=\"4.5\" fill=\"#b6c2e1\"/><ellipse cx=\"12\" cy=\"17\" rx=\"7\" ry=\"4\" fill=\"#b6c2e1\"/></svg>`;
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const googleBtn = document.getElementById('googleSignInBtn');
+  const tryonSection = document.getElementById('tryonSection');
+  const shirtGrid = document.getElementById('shirtGrid');
+  const actionButtons = document.getElementById('actionButtons');
+  const tryBtn = document.getElementById('tryOnBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const imageUpload = document.getElementById('imageUpload');
+  const spinner = document.getElementById('spinner');
+  const canvas = document.getElementById('canvas');
+  const resultImg = document.getElementById('result-img');
+  const ctx = canvas ? canvas.getContext('2d') : null;
+
+  // Google Sign In
+  if (googleBtn) {
+    googleBtn.addEventListener('click', function() {
+      auth.signInWithPopup(provider)
+        .then(() => {
+          const authModal = document.getElementById('auth-modal');
+          if (authModal) authModal.style.display = 'none';
+        })
+        .catch(e => alert('Google sign-in failed: ' + (e.message || e)));
+    });
+  }
+
+  // Email/password sign up
+  window.signUpWithEmail = function(email, password) {
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        const authModal = document.getElementById('auth-modal');
+        if (authModal) authModal.style.display = 'none';
+      })
+      .catch(e => alert('Sign up failed: ' + (e.message || e)));
+  };
+
+  // Email/password login
+  window.loginWithEmail = function(email, password) {
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        const authModal = document.getElementById('auth-modal');
+        if (authModal) authModal.style.display = 'none';
+      })
+      .catch(e => alert('Login failed: ' + (e.message || e)));
+  };
+});
+auth.onAuthStateChanged(async function(user) {
+  if (user) {
+    document.getElementById('authSection').style.display = 'none';
+    tryonSection.classList.remove('hidden');
+    shirtGrid.classList.remove('hidden');
+    actionButtons.classList.remove('hidden');
+    await ensureUserRecord(user.uid);
+    const subscribed = await checkSubscription(user.uid);
+    if (!subscribed) promptSubscription();
+  }
+});
 
 // Firestore helpers
 async function ensureUserRecord(uid) {
@@ -26,8 +117,7 @@ async function ensureUserRecord(uid) {
 async function checkSubscription(uid) {
   // Call Netlify Function
   const res = await fetch('/.netlify/functions/checkSubscription', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ uid })
   });
   if (!res.ok) return false;
@@ -84,93 +174,103 @@ async function removeBackground(file) {
   return new File([blob], 'no-bg.png', { type: blob.type });
 }
 
+// Try-on workflow
+let userFile = null;
+let selectedShirt = null;
 
+imageUpload.addEventListener('change', async (e) => {
+  userFile = e.target.files[0];
+  tryBtn.disabled = !userFile || !selectedShirt;
+});
 
-// Try-on workflow and all DOM-dependent logic
-document.addEventListener('DOMContentLoaded', function() {
-  let userFile = null;
-  let selectedShirt = null;
-
-  const tryBtn = document.getElementById('tryOnBtn');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const imageUpload = document.getElementById('imageUpload');
-  const spinner = document.getElementById('spinner');
-  const canvas = document.getElementById('canvas');
-  const resultImg = document.getElementById('result-img');
-
-  if (imageUpload) {
-    imageUpload.addEventListener('change', async (e) => {
-      userFile = e.target.files[0];
-      if (tryBtn) tryBtn.disabled = !userFile || !selectedShirt;
-    });
-  }
-
-  document.querySelectorAll('.shirt-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      document.querySelectorAll('.shirt-option').forEach(o => o.classList.remove('selected'));
-      opt.classList.add('selected');
-      selectedShirt = opt.dataset.src;
-      if (tryBtn) tryBtn.disabled = !userFile || !selectedShirt;
+document.querySelectorAll('.shirt-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    document.querySelectorAll('.shirt-option').forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    selectedShirt = opt.dataset.src;
+    tryBtn.disabled = !userFile || !selectedShirt;
   });
 });
 
-  if (tryBtn) {
-    tryBtn.addEventListener('click', async () => {
-      tryBtn.disabled = true;
-      if (downloadBtn) downloadBtn.disabled = true;
-      if (spinner) spinner.classList.remove('hidden');
-      if (canvas) canvas.classList.add('hidden');
-      if (resultImg) resultImg.classList.add('hidden');
+tryBtn.addEventListener('click', async () => {
+  tryBtn.disabled = true;
+  downloadBtn.disabled = true;
+  spinner.classList.remove('hidden');
+  canvas.classList.add('hidden');
+  resultImg.classList.add('hidden');
 
-      // 1. Remove background
-      const noBgFile = await removeBackground(await compressImage(userFile));
+  // 1. Remove background
+  const noBgFile = await removeBackground(await compressImage(userFile));
 
-      // 2. Prepare images
-      const modelB64 = await fileToBase64(noBgFile);
-      const garmentResponse = await fetch(selectedShirt);
-      const garmentBlob = await garmentResponse.blob();
-      const garmentB64 = await fileToBase64(garmentBlob);
+  // 2. Prepare images
+  const modelB64 = await fileToBase64(noBgFile);
+  const garmentResponse = await fetch(selectedShirt);
+  const garmentBlob = await garmentResponse.blob();
+  const garmentB64 = await fileToBase64(garmentBlob);
 
-      // 3. Run Fashn
-      const runRes = await fetch(RUN_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
-        body: JSON.stringify({ model_image: modelB64, garment_image: garmentB64, category: 'tops' })
-      });
-      const { id } = await runRes.json();
+  // 3. Run Fashn
+  const runRes = await fetch(RUN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+    body: JSON.stringify({ model_image: modelB64, garment_image: garmentB64, category: 'tops' })
+  });
+  const { id } = await runRes.json();
 
-      // 4. Poll status
-      let status, output;
-      do {
-        await new Promise(r => setTimeout(r, 2000));
-        const statRes = await fetch(STATUS_URL + id, { headers: { Authorization: 'Bearer ' + API_KEY } });
-        const statJson = await statRes.json();
-        status = statJson.status;
-        output = statJson.output;
-      } while (status !== 'completed' && status !== 'failed');
+  // 4. Poll status
+  let status, output;
+  do {
+    await new Promise(r => setTimeout(r, 2000));
+    const statRes = await fetch(STATUS_URL + id, { headers: { Authorization: 'Bearer ' + API_KEY } });
+    const statJson = await statRes.json();
+    status = statJson.status;
+    output = statJson.output;
+  } while (status !== 'completed' && status !== 'failed');
 
-      if (spinner) spinner.classList.add('hidden');
-      if (status === 'completed' && output?.length) {
-        if (resultImg) {
-          resultImg.src = output[0];
-          resultImg.classList.remove('hidden');
-        }
-      } else {
-        alert('Try-on failed, please try again.');
-      }
-      tryBtn.disabled = false;
-      if (downloadBtn) downloadBtn.disabled = false;
+  spinner.classList.add('hidden');
+  if (status === 'completed' && output?.length) {
+    resultImg.src = output[0];
+    resultImg.classList.remove('hidden');
+document.addEventListener('DOMContentLoaded', function() {
+  const openAuthModalBtn = document.getElementById('open-auth-modal');
+  const closeAuthModalBtn = document.getElementById('close-auth-modal');
+  const authModal = document.getElementById('auth-modal');
+  if (openAuthModalBtn && authModal) {
+    openAuthModalBtn.addEventListener('click', () => {
+      authModal.style.display = 'flex';
     });
   }
-
-  if (downloadBtn) {
-    downloadBtn.addEventListener('click', () => {
-      if (!resultImg || !resultImg.src) return;
-      const a = document.createElement('a');
-      a.href = resultImg.src;
-      a.download = 'tryon-result.png';
-      a.click();
+  if (closeAuthModalBtn && authModal) {
+    closeAuthModalBtn.addEventListener('click', () => {
+      authModal.style.display = 'none';
     });
   }
+  if (authModal) {
+    window.addEventListener('click', (e) => {
+      if (e.target === authModal) authModal.style.display = 'none';
+    });
+  }
+});
+  } else {
+// Improved Google sign-in logic
+if (googleBtn) {
+  googleBtn.addEventListener('click', async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      authModal.style.display = 'none';
+    } catch (e) {
+      alert('Google sign-in failed: ' + (e.message || e));
+    }
+  });
+}
+    alert('Try-on failed, please try again.');
+  }
+  tryBtn.disabled = false;
+});
 
-})
+downloadBtn.addEventListener('click', () => {
+  if (!resultImg.src) return;
+  const a = document.createElement('a');
+  a.href = resultImg.src;
+  a.download = 'tryon-result.png';
+  a.click();
+});
