@@ -176,103 +176,92 @@ async function removeBackground(file) {
   return new File([blob], 'no-bg.png', { type: blob.type });
 }
 
-// Try-on workflow
-let userFile = null;
-let selectedShirt = null;
-
-imageUpload.addEventListener('change', async (e) => {
-  userFile = e.target.files[0];
-  tryBtn.disabled = !userFile || !selectedShirt;
-});
-
-document.querySelectorAll('.shirt-option').forEach(opt => {
-  opt.addEventListener('click', () => {
-    document.querySelectorAll('.shirt-option').forEach(o => o.classList.remove('selected'));
-    opt.classList.add('selected');
-    selectedShirt = opt.dataset.src;
-    tryBtn.disabled = !userFile || !selectedShirt;
-  });
-});
-
-tryBtn.addEventListener('click', async () => {
-  tryBtn.disabled = true;
-  downloadBtn.disabled = true;
-  spinner.classList.remove('hidden');
-  canvas.classList.add('hidden');
-  resultImg.classList.add('hidden');
-
-  // 1. Remove background
-  const noBgFile = await removeBackground(await compressImage(userFile));
-
-  // 2. Prepare images
-  const modelB64 = await fileToBase64(noBgFile);
-  const garmentResponse = await fetch(selectedShirt);
-  const garmentBlob = await garmentResponse.blob();
-  const garmentB64 = await fileToBase64(garmentBlob);
-
-  // 3. Run Fashn
-  const runRes = await fetch(RUN_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
-    body: JSON.stringify({ model_image: modelB64, garment_image: garmentB64, category: 'tops' })
-  });
-  const { id } = await runRes.json();
-
-  // 4. Poll status
-  let status, output;
-  do {
-    await new Promise(r => setTimeout(r, 2000));
-    const statRes = await fetch(STATUS_URL + id, { headers: { Authorization: 'Bearer ' + API_KEY } });
-    const statJson = await statRes.json();
-    status = statJson.status;
-    output = statJson.output;
-  } while (status !== 'completed' && status !== 'failed');
-
-  spinner.classList.add('hidden');
-  if (status === 'completed' && output?.length) {
-    resultImg.src = output[0];
-    resultImg.classList.remove('hidden');
-document.addEventListener('DOMContentLoaded', function() {
-  const openAuthModalBtn = document.getElementById('open-auth-modal');
-  const closeAuthModalBtn = document.getElementById('close-auth-modal');
-  const authModal = document.getElementById('auth-modal');
-  if (openAuthModalBtn && authModal) {
-    openAuthModalBtn.addEventListener('click', () => {
-      authModal.style.display = 'flex';
-    });
-  }
-  if (closeAuthModalBtn && authModal) {
-    closeAuthModalBtn.addEventListener('click', () => {
-      authModal.style.display = 'none';
-    });
-  }
-  if (authModal) {
-    window.addEventListener('click', (e) => {
-      if (e.target === authModal) authModal.style.display = 'none';
-    });
-  }
-});
-  } else {
-// Improved Google sign-in logic
-if (googleBtn) {
-  googleBtn.addEventListener('click', async () => {
-    try {
-      await signInWithPopup(auth, provider);
-      authModal.style.display = 'none';
-    } catch (e) {
-      alert('Google sign-in failed: ' + (e.message || e));
-    }
-  });
-}
-    alert('Try-on failed, please try again.');
-  }
-  tryBtn.disabled = false;
-});
-
 downloadBtn.addEventListener('click', () => {
-  if (!resultImg.src) return;
-  const a = document.createElement('a');
-  a.href = resultImg.src;
-  a.download = 'tryon-result.png';
-  a.click();
+
+// Try-on workflow and all DOM-dependent logic
+document.addEventListener('DOMContentLoaded', function() {
+  let userFile = null;
+  let selectedShirt = null;
+
+  const tryBtn = document.getElementById('tryOnBtn');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const imageUpload = document.getElementById('imageUpload');
+  const spinner = document.getElementById('spinner');
+  const canvas = document.getElementById('canvas');
+  const resultImg = document.getElementById('result-img');
+
+  if (imageUpload) {
+    imageUpload.addEventListener('change', async (e) => {
+      userFile = e.target.files[0];
+      if (tryBtn) tryBtn.disabled = !userFile || !selectedShirt;
+    });
+  }
+
+  document.querySelectorAll('.shirt-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.shirt-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      selectedShirt = opt.dataset.src;
+      if (tryBtn) tryBtn.disabled = !userFile || !selectedShirt;
+    });
+  });
+
+  if (tryBtn) {
+    tryBtn.addEventListener('click', async () => {
+      tryBtn.disabled = true;
+      if (downloadBtn) downloadBtn.disabled = true;
+      if (spinner) spinner.classList.remove('hidden');
+      if (canvas) canvas.classList.add('hidden');
+      if (resultImg) resultImg.classList.add('hidden');
+
+      // 1. Remove background
+      const noBgFile = await removeBackground(await compressImage(userFile));
+
+      // 2. Prepare images
+      const modelB64 = await fileToBase64(noBgFile);
+      const garmentResponse = await fetch(selectedShirt);
+      const garmentBlob = await garmentResponse.blob();
+      const garmentB64 = await fileToBase64(garmentBlob);
+
+      // 3. Run Fashn
+      const runRes = await fetch(RUN_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + API_KEY },
+        body: JSON.stringify({ model_image: modelB64, garment_image: garmentB64, category: 'tops' })
+      });
+      const { id } = await runRes.json();
+
+      // 4. Poll status
+      let status, output;
+      do {
+        await new Promise(r => setTimeout(r, 2000));
+        const statRes = await fetch(STATUS_URL + id, { headers: { Authorization: 'Bearer ' + API_KEY } });
+        const statJson = await statRes.json();
+        status = statJson.status;
+        output = statJson.output;
+      } while (status !== 'completed' && status !== 'failed');
+
+      if (spinner) spinner.classList.add('hidden');
+      if (status === 'completed' && output?.length) {
+        if (resultImg) {
+          resultImg.src = output[0];
+          resultImg.classList.remove('hidden');
+        }
+      } else {
+        alert('Try-on failed, please try again.');
+      }
+      tryBtn.disabled = false;
+      if (downloadBtn) downloadBtn.disabled = false;
+    });
+  }
+
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      if (!resultImg || !resultImg.src) return;
+      const a = document.createElement('a');
+      a.href = resultImg.src;
+      a.download = 'tryon-result.png';
+      a.click();
+    });
+  }
 });
