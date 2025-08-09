@@ -1,7 +1,7 @@
 // Firebase Authentication logic for email/password and Google sign-in
 // Replace the config object below with your Firebase project config
 const firebaseConfig = {
-  apiKey: "AIzaSyAlDqliy8paoUMvQzYZmM2YZ-qeUBXhbqk",
+  apiKey: "Dormant-api-key",
   authDomain: "clovr-e1fec.firebaseapp.com",
   projectId: "clovr-e1fec",
   appId: "1:138358764083:web:e49f93ca77cfe4fc7ce946"
