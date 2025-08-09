@@ -1,0 +1,25 @@
+[
+  { "name": "White Tee", "src": "images/tops/white-tee.png", "category": "tops", "tags": ["casual","hot","male","female"] },
+  { "name": "Denim Jacket", "src": "images/tops/denim-jacket.png", "category": "tops", "tags": ["cool","male","female"] },
+  { "name": "Striped Polo", "src": "images/tops/striped-polo.png", "category": "tops", "tags": ["casual","male"] },
+  { "name": "Black Hoodie", "src": "images/tops/black-hoodie.png", "category": "tops", "tags": ["casual","male","female"] },
+  { "name": "Red Blouse", "src": "images/tops/red-blouse.png", "category": "tops", "tags": ["female","formal"] },
+
+  { "name": "Blue Jeans", "src": "images/bottoms/blue-jeans.png", "category": "bottoms", "tags": ["casual","male","female"] },
+  { "name": "Black Skirt", "src": "images/bottoms/black-skirt.png", "category": "bottoms", "tags": ["female","formal"] },
+  { "name": "Khaki Shorts", "src": "images/bottoms/khaki-shorts.png", "category": "bottoms", "tags": ["casual","male"] },
+  { "name": "White Trousers", "src": "images/bottoms/white-trousers.png", "category": "bottoms", "tags": ["formal","male","female"] },
+  { "name": "Pleated Skirt", "src": "images/bottoms/pleated-skirt.png", "category": "bottoms", "tags": ["female"] },
+
+  { "name": "Summer Dress", "src": "images/onepiece/summer-dress.png", "category": "onepiece", "tags": ["female","casual"] },
+  { "name": "Jumpsuit", "src": "images/onepiece/jumpsuit.png", "category": "onepiece", "tags": ["female","formal"] },
+  { "name": "Overalls", "src": "images/onepiece/overalls.png", "category": "onepiece", "tags": ["casual","male","female"] },
+  { "name": "Black Gown", "src": "images/onepiece/black-gown.png", "category": "onepiece", "tags": ["female","formal"] },
+  { "name": "Romper", "src": "images/onepiece/romper.png", "category": "onepiece", "tags": ["female","casual"] },
+
+  { "name": "Baseball Cap", "src": "images/accessories/baseball-cap.png", "category": "accessories", "tags": ["casual","male","female"] },
+  { "name": "Sunglasses", "src": "images/accessories/sunglasses.png", "category": "accessories", "tags": ["summer","male","female"] },
+  { "name": "Leather Belt", "src": "images/accessories/leather-belt.png", "category": "accessories", "tags": ["formal","male"] },
+  { "name": "Pearl Necklace", "src": "images/accessories/pearl-necklace.png", "category": "accessories", "tags": ["female","formal"] },
+  { "name": "Wristwatch", "src": "images/accessories/wristwatch.png", "category": "accessories", "tags": ["male","female"] }
+]

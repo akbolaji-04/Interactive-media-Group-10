@@ -1,3 +1,4 @@
+// ...existing code (one set only, no duplicates)...
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
@@ -174,8 +175,40 @@ tryBtn.addEventListener('click', async () => {
   if (status === 'completed' && output?.length) {
     resultImg.src = output[0];
     resultImg.classList.remove('hidden');
+const openAuthModalBtn = document.getElementById('open-auth-modal');
+const closeAuthModalBtn = document.getElementById('close-auth-modal');
+const authModal = document.getElementById('auth-modal');
+const userSection = document.getElementById('user-section');
+const userEmailSpan = document.getElementById('user-email');
+const clothingUpload = document.getElementById('clothing-upload');
+const tryonCanvas = document.getElementById('tryon-canvas');
     downloadBtn.disabled = false;
+// Modal logic
+if (openAuthModalBtn && authModal) {
+  openAuthModalBtn.addEventListener('click', () => {
+    authModal.style.display = 'flex';
+  });
+}
+if (closeAuthModalBtn && authModal) {
+  closeAuthModalBtn.addEventListener('click', () => {
+    authModal.style.display = 'none';
+  });
+}
+window.addEventListener('click', (e) => {
+  if (e.target === authModal) authModal.style.display = 'none';
+});
   } else {
+// Improved Google sign-in logic
+if (googleBtn) {
+  googleBtn.addEventListener('click', async () => {
+    try {
+      await signInWithPopup(auth, provider);
+      authModal.style.display = 'none';
+    } catch (e) {
+      alert('Google sign-in failed: ' + (e.message || e));
+    }
+  });
+}
     alert('Try-on failed, please try again.');
   }
   tryBtn.disabled = false;
