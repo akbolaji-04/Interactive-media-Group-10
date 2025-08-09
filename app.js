@@ -1,7 +1,4 @@
 // ...existing code (one set only, no duplicates)...
-
-// (All import statements removed. Only use global firebase object.)
-
 const firebaseConfig = {
   apiKey: "AIzaSyAlDqliy8paoUMvQzYZmM2YZ-qeUBXhbqk",
   authDomain: "clovr-e1fec.firebaseapp.com",
@@ -16,96 +13,6 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-const REMOVE_BG_KEY = 'NmeuhmwYFeh48ySGMZehsrVo';
-const API_KEY = 'fa-P6CHIRRwllKr-vxrnZlwkXBxx5ibCo81xMRBp';
-const RUN_URL = 'https://api.fashn.ai/v1/run';
-const STATUS_URL = 'https://api.fashn.ai/v1/status/';
-const PAYSTACK_KEY = 'sk_test_27830de011b1b57cf83a852f2eb2e2b93a451fd1';
-
-// DOM refs
-// Profile button logic
-document.addEventListener('DOMContentLoaded', function() {
-  const profileBtn = document.getElementById('open-auth-modal');
-  const authModal = document.getElementById('auth-modal');
-  if (profileBtn && authModal) {
-    profileBtn.addEventListener('click', () => {
-      authModal.style.display = 'flex';
-    });
-  }
-});
-
-// Update profile placeholder after login
-  auth.onAuthStateChanged(async function(user) {
-  const profilePlaceholder = document.getElementById('profile-placeholder');
-  if (user && profilePlaceholder) {
-    if (user.photoURL) {
-      profilePlaceholder.innerHTML = `<img src="${user.photoURL}" alt="Profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-    } else if (user.email) {
-      // Show first letter of email as fallback
-      profilePlaceholder.innerHTML = `<span style='font-size:1.5rem;color:#fff;'>${user.email[0].toUpperCase()}</span>`;
-    }
-  } else if (profilePlaceholder) {
-    // Reset to default SVG
-    profilePlaceholder.innerHTML = `<svg id=\"profile-svg\" width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"8.5\" r=\"4.5\" fill=\"#b6c2e1\"/><ellipse cx=\"12\" cy=\"17\" rx=\"7\" ry=\"4\" fill=\"#b6c2e1\"/></svg>`;
-  }
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  const googleBtn = document.getElementById('googleSignInBtn');
-  const tryonSection = document.getElementById('tryonSection');
-  const shirtGrid = document.getElementById('shirtGrid');
-  const actionButtons = document.getElementById('actionButtons');
-  const tryBtn = document.getElementById('tryOnBtn');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const imageUpload = document.getElementById('imageUpload');
-  const spinner = document.getElementById('spinner');
-  const canvas = document.getElementById('canvas');
-  const resultImg = document.getElementById('result-img');
-  const ctx = canvas ? canvas.getContext('2d') : null;
-
-  // Google Sign In
-  if (googleBtn) {
-    googleBtn.addEventListener('click', function() {
-      auth.signInWithPopup(provider)
-        .then(() => {
-          const authModal = document.getElementById('auth-modal');
-          if (authModal) authModal.style.display = 'none';
-        })
-        .catch(e => alert('Google sign-in failed: ' + (e.message || e)));
-    });
-  }
-
-  // Email/password sign up
-  window.signUpWithEmail = function(email, password) {
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        const authModal = document.getElementById('auth-modal');
-        if (authModal) authModal.style.display = 'none';
-      })
-      .catch(e => alert('Sign up failed: ' + (e.message || e)));
-  };
-
-  // Email/password login
-  window.loginWithEmail = function(email, password) {
-    auth.signInWithEmailAndPassword(email, password)
-      .then(() => {
-        const authModal = document.getElementById('auth-modal');
-        if (authModal) authModal.style.display = 'none';
-      })
-      .catch(e => alert('Login failed: ' + (e.message || e)));
-  };
-});
-auth.onAuthStateChanged(async function(user) {
-  if (user) {
-    document.getElementById('authSection').style.display = 'none';
-    tryonSection.classList.remove('hidden');
-    shirtGrid.classList.remove('hidden');
-    actionButtons.classList.remove('hidden');
-    await ensureUserRecord(user.uid);
-    const subscribed = await checkSubscription(user.uid);
-    if (!subscribed) promptSubscription();
-  }
-});
 
 // Firestore helpers
 async function ensureUserRecord(uid) {
@@ -264,4 +171,4 @@ document.addEventListener('DOMContentLoaded', function() {
       a.click();
     });
   }
-});
+
